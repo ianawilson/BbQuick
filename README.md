@@ -5,6 +5,7 @@ A Chrome Extension and hand-crafted API for the Blackboard Learn installation at
 
 *You'll be licking your fingers by the time you're done.*
 
-
+Note
+----
 
 This project is being developed for Jeff Bigham's *Human Computer Interaction* class (CSC212) at the University of Rochester.
