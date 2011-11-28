@@ -1,0 +1,16 @@
+{
+  "name": "BbQuick",
+  "version": "1.0",
+  "description": "You'll be licking your fingers by the time you're done.",
+  "permissions": [
+    "http://my.rochester.edu/"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://my.rochester.edu/*"],
+      "css": [],
+      "js": ["jquery-1.6.4.js"],
+      "all_frames": true
+    }
+  ]
+}
