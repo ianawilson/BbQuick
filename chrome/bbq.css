@@ -1,41 +1,106 @@
+html {
+	max-height: 300px;
+}
+
 body {
+	max-height: 300px;
+	margin: 0;
+	padding-right: 15px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
 
-	background-color: #FFFF99;
+a {
+	color: black;
+	text-decoration: none;
+}
+
+/* Headers */
+
+h1 {
+	margin-top: 40px;
+	margin-bottom: 0;
+	text-align: center;
+	font-size: 1.5em;
+}
+h2 {
+	font-size: 1.2em;
+	margin: 2px 0 2px;
+}
+h3 {
+	font-size: 0.7em;
+}
+
+hr {
+	width: 50%;
+}
+
+/* Major divs */
+
+#wrapper {
+	position: relative;
 	font-family: arial; 
-	min-width: 400px;
-	max-height: 65%;
-
+	width: 350px;
+	padding-bottom: 5px;
 }
 
-table {
+#add-resource {
+	font-size: 0.75em;
+	position: absolute;
+	right: 1px;
+	top: 1px;
+	text-decoration: underline;
+}
 
-	border: 0px; 
+#courses {
+	margin-top: 15px;
+	clear: both;
+}
+
+#header {
+	padding: 1px;
+}
+
+/* Boxes */
+
+.info {
 	width: 90%;
-	margin-left: auto;
-	margin-right: auto;
-	
+/*	background-color: #FFF;*/
+/*	border-top: 1px solid black;*/
+	padding: 0 5px;
+	margin: 0 10px;
 }
 
-tr, td {
 
+/* Buttons */
+
+.button {
 	border: 1px solid black;
 	padding: 5px;
-	background-color: #FFF;
-
+	margin: 10px;
+	background-color: #0088FF;
 }
 
-h3 {
-
-	text-align: center;
-
+.small {
+	position: absolute;
+	right: 5px;
+	font-size: 0.75em;
+	font-weight: bold;
 }
-	
-#log {
-  width: 90%;
-  min-height: 50px;
-  background-color: #FFF;
-  border: 1px solid black;
-  padding-left: 1em;
-  overflow: auto;
+
+.mouseover {
+	background-color: #5CB3FF;
 }
-	
+
+/* Breadcrumbs */
+
+#breadcrumbs {
+	font-size: 0.75em;
+	margin: 3px;
+	position: absolute;
+}
+
+#breadcrumbs a {
+	color: #A10000;
+	text-decoration: underline;
+}
