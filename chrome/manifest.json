@@ -2,6 +2,10 @@
   "name": "BbQuick",
   "version": "1.0",
   "description": "You'll be licking your fingers by the time you're done.",
+  "browser_action": {
+    "default_icon": "bb.png",
+      "popup": "bbq.html"
+  },
   "permissions": [
     "http://my.rochester.edu/"
   ],
