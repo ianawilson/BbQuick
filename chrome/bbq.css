@@ -30,12 +30,13 @@ h3 {
 
 }
 	
-#log {
-  width: 90%;
+#announcements {
+  width: 89%;
   min-height: 50px;
   background-color: #FFF;
   border: 1px solid black;
-  padding-left: 1em;
+  margin-left: auto;
+  margin-right: auto;
   overflow: auto;
 }
 	
