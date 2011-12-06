@@ -32,7 +32,7 @@ Scraping Process
 views:
 
 - getContentURL
-- isUserAuthenticated
+- isAuthenticated
 - getCourses
 - getCourseSections
 - getCourseSubsections
@@ -42,7 +42,8 @@ Notes and Ideas
 ---------------
 
 - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
-
+- CSRF in Django is turned off since this simply parses html
+- permissions in our manifest are currently wide open !!
 
 
 Wishlist

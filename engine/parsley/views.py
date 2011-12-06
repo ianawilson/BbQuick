@@ -11,15 +11,23 @@ def getContentURL(request):
         soup = BeautifulSoup(body)
         frame = soup('frame', attrs={'name':'content'})[0]
         url = frame['src']
-        response = jsonEncode({'url': url})
+        response = jsonEncode({'contentURL': url})
     else:
         response = jsonEncode({'error': "You must POST to this URL with the key 'html' in the POST data."})
     return HttpResponse(content=response)
     
-def isUserAuthenticated(request):
-    if request.method == 'POST':
-        pass
-    return HttpResponse(content='')
+def isAuthenticated(request):
+    if request.method == 'POST' and 'html' in request.POST:
+        body = request.POST['html']
+        soup = BeautifulSoup(body)
+        form = soup('form', attrs={'name': 'login'})
+        if form:
+            response = jsonEncode({'authenticated': 'false'})
+        else:
+            response = jsonEncode({'authenticated': 'true'})
+    else:
+        response = jsonEncode({'error': "You must POST to this URL with the key 'html' in the POST data."})
+    return HttpResponse(content=response)
     
 def getCourses(request):
     if request.method == 'POST':
