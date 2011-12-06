@@ -51,6 +51,7 @@ Wishlist
 - Need a way to figure out if a person is logged in or not (don't try to scrape if they aren't!)
     - check 
 - Bb login in popup if user isn't logged in already
+- proper try/except blocks for BeautifulSoup so that we don't get totally useless 500 errors
 
 
 Requirements

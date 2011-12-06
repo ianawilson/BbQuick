@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 from django.core.management import execute_manager
 import imp
-import os
-
-print os.listdir('.')
 
 try:
     imp.find_module('settings') # Assumed to be in the same directory.
