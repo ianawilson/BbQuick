@@ -12,15 +12,51 @@ interface.
 To Do
 -----
 
-- Figure out how SQL works with Chrome
 - Learn about Scrapy http://scrapy.org/
-- Write API
+
+
+
+
+Scraping Process
+----------------
+
+- Do a GET for "my.rochester.edu"
+- Process: find the "content" frame, find the URL for that
+- GET content frame URL
+- Process: find each course, collect URLs
+- loop on course URLs, GET for each
+    - Process: find resource / button for each course, collect URLs
+    - loop on resources, GET for each
+        - Process: find sub-resources / buttons for each resource, collect content or URLs
+
+views:
+
+- getContentURL
+- getCourses
+- getCourseSections
+- getCourseSubsections
+
+
+Notes and Ideas
+---------------
+
+- localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
+
 
 
 Wishlist
 --------
 
+- Need a way to figure out if a person is logged in or not (don't try to scrape if they aren't!)
+    - check 
 - Bb login in popup if user isn't logged in already
+
+
+Requirements
+------------
+
+- Python 2.7
+- Beautiful Soup 3.2.0
 
 
 Note
