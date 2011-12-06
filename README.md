@@ -44,6 +44,9 @@ Notes and Ideas
 - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
 - CSRF in Django is turned off since this simply parses html
 - permissions in our manifest are currently wide open !!
+- You can use cURL to make some quick, fake POSTs to the test server. eg:
+    curl -XPOST -HContent-type:text/plain --data "html=<html><body><p>asdf</p></body></html>" http://localhost:8000/isAuthenticated/
+    
 
 
 Wishlist
