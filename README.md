@@ -32,6 +32,7 @@ Scraping Process
 views:
 
 - getContentURL
+- isUserAuthenticated
 - getCourses
 - getCourseSections
 - getCourseSubsections
