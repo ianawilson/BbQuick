@@ -1,23 +1,7 @@
 <html>
 <head>
     <script type="text/javascript" src="./jquery-1.6.4.min.js"></script>
-    <script>
-    var engineURL = 'http://localhost:8000/';
-    
-    $(document).ready(function() {
-        $.get('http://my.rochester.edu/',
-            function(data) {
-                $.post(engineURL + 'getContentURL', {'html': data}, 
-                    function(response) {
-                        console.log(response)
-                    }
-                );
-            }
-    
-        );
-    });
-
-    </script>
+    <script type="text/javascript" src="./background.js "></script>
 </head>
 
 </html>
