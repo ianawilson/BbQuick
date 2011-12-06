@@ -52,6 +52,7 @@ Wishlist
     - check 
 - Bb login in popup if user isn't logged in already
 - proper try/except blocks for BeautifulSoup so that we don't get totally useless 500 errors
+    - return json with 'error' key, find a way to deal with this / display in extension
 
 
 Requirements
