@@ -7,11 +7,12 @@
       "popup": "bbq.html"
   },
   "permissions": [
-    "http://my.rochester.edu/"
+    "*://my.rochester.edu/*"
   ],
+  "background_page": "background.html",
   "content_scripts": [
     {
-      "matches": ["http://my.rochester.edu/*"],
+      "matches": ["*://my.rochester.edu/*"],
       "css": [],
       "js": ["jquery-1.6.4.js"],
       "all_frames": true
