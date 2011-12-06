@@ -7,7 +7,9 @@
       "popup": "bbq.html"
   },
   "permissions": [
-    "*://my.rochester.edu/*"
+    "*://my.rochester.edu/*",
+    "http://localhost:8000/*",
+    "https://ajax.googleapis.com/*"
   ],
   "background_page": "background.html",
   "content_scripts": [
@@ -17,5 +19,6 @@
       "js": ["jquery-1.6.4.js"],
       "all_frames": true
     }
-  ]
+  ],
+  "content_security_policy": "default-src 'self' connect-src http://localhost:8000/ 'unsafe-inline'"
 }
