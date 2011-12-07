@@ -42,6 +42,7 @@ Notes and Ideas
 - permissions in our manifest are currently wide open !!
 - You can use cURL to make some quick, fake POSTs to the test server. eg:
     curl -XPOST -HContent-type:text/plain --data "html=<html><body><p>asdf</p></body></html>" http://localhost:8000/isAuthenticated/
+- For the Course scraping, we should actually get the course url and then scrape from there. the content is more condensed anyway, and can be parsed with a regex.
 
 
 Structure for Course Information Data Structure
