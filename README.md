@@ -12,10 +12,6 @@ interface.
 To Do
 -----
 
-- Learn about Scrapy http://scrapy.org/
-
-
-
 
 Scraping Process
 ----------------
@@ -46,7 +42,22 @@ Notes and Ideas
 - permissions in our manifest are currently wide open !!
 - You can use cURL to make some quick, fake POSTs to the test server. eg:
     curl -XPOST -HContent-type:text/plain --data "html=<html><body><p>asdf</p></body></html>" http://localhost:8000/isAuthenticated/
-    
+
+
+Structure for Course Information Data Structure
+-----------------------------------------------
+
+- dictionary localStorage or JSON
+    - key 'courses': array of courses, each being a dict
+        - key 'name', eg 'Human Computer Interaction'
+        - key 'url'
+        - key 'shortname', eg 'csc212'
+        - key 'sections': array of sections, each being a dict
+            - key 'name', eg 'Syllabus'
+            - key 'url'
+            - key 'subsections', may be null if none exist: array of sections, each being a dict
+                - key 'name', eg 'Assignment #1'
+                - key 'url'
 
 
 Wishlist

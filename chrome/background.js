@@ -4,7 +4,8 @@ var bbURL = 'http://my.rochester.edu';
 
 // temporary storage for what we've already got
 var contentURL = null;
-var authenticated = null;
+var authenticated = false;
+var courses = new Array(0);
 
 $(document).ready();
 
@@ -21,4 +22,35 @@ function isAuthenticatedAsync(success) {
 			$.post(engineURL + '/isAuthenticated/', {'html': data}, success);
 		});
 	});
+}
+
+function getCoursesAsync(success) {
+	if (authenticated) {
+		$.get(bbURL + contentURL, function(data) {
+			$.post(engineURL + '/getCourses/', {'html': data}, function(data) {
+				response = JSON.parse(data);
+				courses = response['courses'];
+				if (success != null && typeof success == 'function') {
+					success.call(this, courses);
+				}
+			});
+		});
+	}
+}
+
+function getCourseSectionsAsync(success) {
+	if (courses.length > 0) {
+		for (i in courses) {
+			course = courses[i];
+			$.get(bbURL + course['url'], function(data) {
+				$.post(engineURL + '/getCourseSections/', {'html', data}, function(data) {
+					response = JSON.parse(data);
+					course['sections'] = response['sections'];
+					if (success != null && typeof sucess == 'function') {
+						success.call(this, course['sections']);
+					}
+				});
+			});
+		}
+	}
 }
