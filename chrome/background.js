@@ -24,33 +24,41 @@ function isAuthenticatedAsync(success) {
 	});
 }
 
-function getCoursesAsync(success) {
+function getCoursesAsync() {
 	if (authenticated) {
 		$.get(bbURL + contentURL, function(data) {
 			$.post(engineURL + '/getCourses/', {'html': data}, function(data) {
 				response = JSON.parse(data);
 				courses = response['courses'];
-				if (success != null && typeof success == 'function') {
-					success.call(this, courses);
+				if (courses.length > 0) {
+					for (i in courses) {
+						course = courses[i];
+						getCourseSectionsAsync(course);
+					}
 				}
 			});
 		});
 	}
 }
 
-function getCourseSectionsAsync(success) {
-	if (courses.length > 0) {
-		for (i in courses) {
-			course = courses[i];
-			$.get(bbURL + course['url'], function(data) {
-				$.post(engineURL + '/getCourseSections/', {'html', data}, function(data) {
-					response = JSON.parse(data);
-					course['sections'] = response['sections'];
-					if (success != null && typeof sucess == 'function') {
-						success.call(this, course['sections']);
-					}
-				});
-			});
-		}
-	}
+function getCourseSectionsAsync(course) {
+	$.get(bbURL + course['url'], function(data) {
+		$.post(engineURL + '/getCourseSections/', {'html', data}, function(data) {
+			response = JSON.parse(data);
+			course['sections'] = response['sections'];
+			for (i in course['sections']) {
+				section = course['sections'][i];
+				getCourseSubsectionsAsync(section);
+			}
+		});
+	});
+}
+
+function getCourseSubsectionAsync(section) {
+	$.get(bbURL + section['url'], function(data) {
+		$.post(engineURL + '/getCourseSubsections/', {'html', data}, function(data) {
+			response = JSON.parse(data);
+			section['subsections'] = response['subsections'];
+		});
+	});
 }
