@@ -43,7 +43,7 @@ function getCoursesAsync() {
 
 function getCourseSectionsAsync(course) {
 	$.get(bbURL + course['url'], function(data) {
-		$.post(engineURL + '/getCourseSections/', {'html', data}, function(data) {
+		$.post(engineURL + '/getCourseSections/', {'html': data}, function(data) {
 			response = JSON.parse(data);
 			course['sections'] = response['sections'];
 			for (i in course['sections']) {
@@ -56,7 +56,7 @@ function getCourseSectionsAsync(course) {
 
 function getCourseSubsectionAsync(section) {
 	$.get(bbURL + section['url'], function(data) {
-		$.post(engineURL + '/getCourseSubsections/', {'html', data}, function(data) {
+		$.post(engineURL + '/getCourseSubsections/', {'html': data}, function(data) {
 			response = JSON.parse(data);
 			section['subsections'] = response['subsections'];
 		});
