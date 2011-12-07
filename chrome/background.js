@@ -7,7 +7,18 @@ var contentURL = null;
 var authenticated = false;
 var courses = new Array(0);
 
-$(document).ready();
+$(document).ready(function() {
+	getContentURLAsync(function(data) {
+		response = JSON.parse(data);
+		contentURL = response["contentURL"];
+	})
+	isAuthenticatedAsync(setAuthenticated);
+});
+
+function setAuthenticated(data) {
+	response = JSON.parse(data);
+	authenticated = response["authenticated"];
+}
 
 function getContentURLAsync(success) {
 	$.get(bbURL + '/', function(data) {
@@ -25,15 +36,18 @@ function isAuthenticatedAsync(success) {
 }
 
 function getCoursesAsync() {
-	if (authenticated) {
+	if (authenticated) { 
+		console.log(bbURL + contentURL);
 		$.get(bbURL + contentURL, function(data) {
+			console.log("1");
 			$.post(engineURL + '/getCourses/', {'html': data}, function(data) {
+				console.log("2");
 				response = JSON.parse(data);
 				courses = response['courses'];
 				if (courses.length > 0) {
 					for (i in courses) {
 						course = courses[i];
-						getCourseSectionsAsync(course);
+						//getCourseSectionsAsync(course);
 					}
 				}
 			});

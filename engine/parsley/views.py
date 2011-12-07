@@ -30,8 +30,27 @@ def isAuthenticated(request):
     return HttpResponse(content=response)
     
 def getCourses(request):
-    if request.method == 'POST':
-        pass
+    if request.method == 'POST' and 'html' in request.POST:
+        print 1
+        courses = []
+        body = request.POST['html']
+        soup = BeautifulSoup(body)
+        div = soup.find(text='Courses Online').parent.parent.parent
+        trs = div.findAll('tr')
+        print 2
+        trs = trs[2:-1]
+        print 3
+        for tr in trs:
+            print 4
+            course = {}
+            anchor = tr.find('a')
+            print dir(anchor.attrs)
+            course['name'] = anchor.contents[0].strip()
+            print anchor.attrs
+            for attr in anchor.attrs:
+                if attr[0] == 'href':
+                    course['url'] = attr[1]
+            print course
     return HttpResponse(content='')
     
 def getCourseSections(request):
