@@ -38,6 +38,8 @@ function getCoursesAsync() {
 				}
 			});
 		});
+	} else {
+		console.log('User not authenticated.');
 	}
 }
 
