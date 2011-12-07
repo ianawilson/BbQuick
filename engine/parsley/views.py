@@ -79,18 +79,67 @@ def getCourses(request):
                 course['shortname'] = match.group(1)
             
             courses.append(course)
-        print courses
         response = jsonEncode({'courses': courses})
     else:
         response = jsonEncode({'error': "You must POST to this URL with the key 'html' in the POST data."})
     return HttpResponse(content=response)
     
 def getCourseSections(request):
-    if request.method == 'POST':
-        pass
-    return HttpResponse(content='')
+    if request.method == 'POST' and 'html' in request.POST:
+        sections = []
+        body = request.POST['html']
+        soup = BeautifulSoup(body)
+        ul = soup.find(attrs={'id': 'courseMenuPalette_contents'})
+        lis = ul.findAll('li')[:-3] # remove final dividers and Course Tools
+        for li in lis:
+            section = {}
+            anchor = li.next.next
+            section['url'] = anchor['href']
+            section['name'] = anchor.next.contents[0]
+            
+            sections.append(section)
+        
+        response = jsonEncode({'sections': sections})
+    else:
+        response = jsonEncode({'error': "You must POST to this URL with the key 'html' in the POST data."})
+    return HttpResponse(content=response)
     
 def getCourseSubsections(request):
-    if request.method == 'POST':
-        pass
-    return HttpResponse(content='')
+    if request.method == 'POST' and 'html' in request.POST:
+        subsections = []
+        body = request.POST['html']
+        soup = BeautifulSoup(body)
+        
+        # most things use the pageList (course materials, assignments, syllabus)
+        pageList = soup.find(attrs={'id': 'pageList'})
+        # only announcements use the announcementList
+        announcementList = soup.find(attrs={'id': 'announcementList'})
+        if pageList:
+            print '== Page List =='
+            for li in pageList.findAll('li', attrs={'class': 'clearfix read'}):
+                anchor = li.find('a')
+                if anchor:
+                    subsection = {}
+                    subsection['url'] = anchor['href']
+                    heading = li.find('h3')
+                    name = drillDown(heading)
+                    if name:
+                        subsection['name'] = name
+                else:
+                    pass
+                    # print '"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""'
+                    # print 'no anchor!', li.prettify()
+                subsections.append(subsection)
+        elif announcementList:
+            print '== Announcements =='
+            for li in announcementList.findAll('li'):
+                pass
+                # print li
+        else:
+            # if we can't find one of these, there are no subsections that we could parse
+            pass
+        
+        response = jsonEncode({'subsections': subsections})
+    else:
+        response = jsonEncode({'error': "You must POST to this URL with the key 'html' in the POST data."})
+    return HttpResponse(content=response)

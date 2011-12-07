@@ -71,7 +71,7 @@ function getCourses() {
 				if (courses.length > 0) {
 					for (i in courses) {
 						course = courses[i];
-						//getCourseSections(course);
+						getCourseSections(course);
 					}
 				}
 			});
@@ -94,7 +94,7 @@ function getCourseSections(course) {
 	});
 }
 
-function getCourseSubsection(section) {
+function getCourseSubsections(section) {
 	$.get(bbURL + section['url'], function(data) {
 		$.post(engineURL + '/getCourseSubsections/', {'html': data}, function(data) {
 			response = JSON.parse(data);
