@@ -9,12 +9,39 @@ def getContentURL(request):
     if request.method == 'POST' and 'html' in request.POST:
         body = request.POST['html']
         soup = BeautifulSoup(body)
-        frame = soup('frame', attrs={'name':'content'})[0]
+        frame = soup.find('frame', attrs={'name':'content'})
         url = frame['src']
         response = jsonEncode({'contentURL': url})
     else:
         response = jsonEncode({'error': "You must POST to this URL with the key 'html' in the POST data."})
     return HttpResponse(content=response)
+
+
+def getNavURL(request):
+    if request.method == 'POST' and 'html' in request.POST:
+        body = request.POST['html']
+        soup = BeautifulSoup(body)
+        frame = soup.find('frame', attrs={'name':'nav'})
+        url = frame['src']
+        response = jsonEncode({'navURL': url})
+    else:
+        response = jsonEncode({'error': "You must POST to this URL with the key 'html' in the POST data."})
+    return HttpResponse(content=response)
+
+
+def getCoursesURL(request):
+    if request.method == 'POST' and 'html' in request.POST:
+        body = request.POST['html']
+        soup = BeautifulSoup(body)
+        table = soup.find('table', attrs={'id': 'appTabList'})
+        courses = table.find(attrs={'id': 'Courses'}).next
+        url = courses['href']
+        url = url[23:] # remove http://my.rochester.edu :P
+        response = jsonEncode({'coursesURL': url})
+    else:
+        response = jsonEncode({'error': "You must POST to this URL with the key 'html' in the POST data."})
+    return HttpResponse(content=response)
+
     
 def isAuthenticated(request):
     if request.method == 'POST' and 'html' in request.POST:
@@ -31,27 +58,32 @@ def isAuthenticated(request):
     
 def getCourses(request):
     if request.method == 'POST' and 'html' in request.POST:
-        print 1
         courses = []
         body = request.POST['html']
         soup = BeautifulSoup(body)
-        div = soup.find(text='Courses Online').parent.parent.parent
+        div = soup.find(attrs={'class': 'moduleTitle'}, text='Courses Online').parent.parent.parent
         trs = div.findAll('tr')
-        print 2
-        trs = trs[2:-1]
-        print 3
+        trs = trs[2:-1] # remove extraneous entries like header and footer
         for tr in trs:
-            print 4
             course = {}
             anchor = tr.find('a')
-            print dir(anchor.attrs)
-            course['name'] = anchor.contents[0].strip()
-            print anchor.attrs
+            course['name'] = anchor.contents[0].strip().title()
             for attr in anchor.attrs:
                 if attr[0] == 'href':
-                    course['url'] = attr[1]
-            print course
-    return HttpResponse(content='')
+                    match = re.search(r'&url=(.+)', attr[1])
+                    if match.groups():
+                        course['url'] = match.group(1)
+            td = anchor.parent.nextSibling.next
+            match = re.search(r'(\w+).', td.contents[0])
+            if match.groups():
+                course['shortname'] = match.group(1)
+            
+            courses.append(course)
+        print courses
+        response = jsonEncode({'courses': courses})
+    else:
+        response = jsonEncode({'error': "You must POST to this URL with the key 'html' in the POST data."})
+    return HttpResponse(content=response)
     
 def getCourseSections(request):
     if request.method == 'POST':
