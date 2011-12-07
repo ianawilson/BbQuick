@@ -134,7 +134,6 @@ def getCourseSubsections(request):
             print '== Announcements =='
             for li in announcementList.findAll('li'):
                 pass
-                # print li
         else:
             # if we can't find one of these, there are no subsections that we could parse
             pass
