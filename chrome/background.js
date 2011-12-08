@@ -113,4 +113,33 @@ function getCourseSubsections(section) {
  **/
 
 // get recent announcements
-// 
+function getRecentAnnouncements(limit) {
+	if (limit == null) {
+		limit = 10;
+	}
+	
+	announcements = []
+	
+	for (course in courses) {
+		// announcements are always the first section, and they are guaranteed to exist by parsley
+		theseAnnce = courses[course]['sections'][0]['subsections']
+		announcements = announcements.concat(theseAnnce)
+	}
+	
+	announcements.sort(function(a, b) {
+		// b - a so that they are sorted with the most recent (highest) first
+		return announceSorted(b) - announceSorted(a);
+	});
+	
+	// cut off everything after limit
+	announcements.splice(limit)
+	
+	return announcements
+}
+function announceSorted(item) {
+	ms = 0;
+	if (item['date'].length > 0) {
+		ms = Date.parse(item['date']);
+	}
+	return ms;
+}
