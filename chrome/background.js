@@ -83,7 +83,7 @@ function getCourses() {
 
 function getCourseSections(course) {
 	$.get(bbURL + course['url'], function(data) {
-		$.post(engineURL + '/getCourseSections/', {'html': data}, function(data) {
+		$.post(engineURL + '/getCourseSections/', {'html': data, 'url': course['url']}, function(data) {
 			response = JSON.parse(data);
 			course['sections'] = response['sections'];
 			for (i in course['sections']) {

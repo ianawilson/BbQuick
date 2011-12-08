@@ -85,8 +85,16 @@ def getCourses(request):
     return HttpResponse(content=response)
     
 def getCourseSections(request):
-    if request.method == 'POST' and 'html' in request.POST:
+    if request.method == 'POST' and 'html' in request.POST and 'url' in request.POST:
         sections = []
+        
+        # add announcements manually, because they are a special case, and the buttons are not always included
+        section = {}
+        section['name'] = 'Announcements'
+        section['url'] = request.POST['url']
+        sections.append(section)
+        
+        # start searching for course buttons
         body = request.POST['html']
         soup = BeautifulSoup(body)
         ul = soup.find(attrs={'id': 'courseMenuPalette_contents'})
@@ -94,10 +102,12 @@ def getCourseSections(request):
         for li in lis:
             section = {}
             anchor = li.next.next
-            section['url'] = anchor['href']
             section['name'] = anchor.next.contents[0]
+            section['url'] = anchor['href']
             
-            sections.append(section)
+            # skip announcements for everything, they were added manually at the beginning
+            if not section['name'] == 'Announcements':
+                sections.append(section)
         
         response = jsonEncode({'sections': sections})
     else:
@@ -108,6 +118,7 @@ def getCourseSubsections(request):
     if request.method == 'POST' and 'html' in request.POST:
         subsections = []
         body = request.POST['html']
+        body = body.replace('&nbsp;', ' ')
         soup = BeautifulSoup(body)
         
         # most things use the pageList (course materials, assignments, syllabus)
@@ -115,7 +126,6 @@ def getCourseSubsections(request):
         # only announcements use the announcementList
         announcementList = soup.find(attrs={'id': 'announcementList'})
         if pageList:
-            print '== Page List =='
             for li in pageList.findAll('li', attrs={'class': 'clearfix read'}):
                 anchor = li.find('a')
                 if anchor:
@@ -131,9 +141,21 @@ def getCourseSubsections(request):
                     # print 'no anchor!', li.prettify()
                 subsections.append(subsection)
         elif announcementList:
-            print '== Announcements =='
-            for li in announcementList.findAll('li'):
-                pass
+            for li in announcementList.findAll('li', attrs={'class': 'clearfix'}):
+                subsection = {}
+                heading = li.find('h3')
+                subsection['name'] = drillDown(heading).strip()
+                detailsList = li.find('div', {'class': 'details'}).contents
+                details = ''
+                for detail in detailsList:
+                    details = details + str(detail)
+                subsection['details'] = details.strip()
+                info = li.find('div', attrs={'class': 'announcementInfo'})
+                spans = info.findAll('span')
+                subsection['author'] = spans[0].nextSibling.strip().title()
+                subsection['date'] = spans[1].nextSibling.strip()
+                
+                subsections.append(subsection)
         else:
             # if we can't find one of these, there are no subsections that we could parse
             pass
