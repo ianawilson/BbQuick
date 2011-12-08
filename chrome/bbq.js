@@ -1,17 +1,19 @@
 $(document).ready(init);
 
 var button = "<div class='button'></div>";
+var courses;
 
 function init() {
+	courses = chrome.extension.getBackgroundPage().courses;
 
-	for (i = 0; i<data["courses"].length; i++) {
-		var div = $(button).html(data["courses"][i]["name"]);
+	for (i = 0; i<courses.length; i++) {
+		var div = $(button).html(courses[i]["name"]);
 
 		div.click(function() {
 			showCourse(i);
 		});
 	
-		$("#courses").append(div);
+		$("#courseDiv").append(div);
 	}
 	
 	$(".button").mouseover(function() {

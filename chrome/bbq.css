@@ -83,6 +83,7 @@ hr {
 	padding: 5px;
 	margin: 10px;
 	background-color: #0088FF;
+    cursor: pointer;
 }
 
 .small {
