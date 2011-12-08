@@ -89,6 +89,9 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    
+    # terminal logging of stack trace on errors
+    'engine.middleware.ExceptionLoggingMiddleware',
 )
 
 ROOT_URLCONF = 'engine.urls'
