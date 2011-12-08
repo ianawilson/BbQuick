@@ -18,12 +18,17 @@ $(document).ready(function() {
 	// 	console.log(response)
 	// 	coursesURL = response['contentURL'];
 	// });
-	isAuthenticated(setAuthenticated);
+	isAuthenticated(start);
 });
 
-function setAuthenticated(data) {
+/**
+ * Whole bunch of async
+ **/
+
+function start(data) {
 	response = JSON.parse(data);
 	authenticated = response["authenticated"];
+	getCourses();
 }
 
 function getContentURL(success) {
@@ -102,3 +107,10 @@ function getCourseSubsections(section) {
 		});
 	});
 }
+
+/**
+ * Quick Functions for getting data
+ **/
+
+// get recent announcements
+// 
