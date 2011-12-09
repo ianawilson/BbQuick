@@ -67,12 +67,20 @@ hr {
 
 /* Boxes */
 
-.info {
+.announcement {
+	font-size: 0.8em;
 	width: 90%;
 /*	background-color: #FFF;*/
 /*	border-top: 1px solid black;*/
 	padding: 0 5px;
 	margin: 0 10px;
+}
+.announcementInfo {
+	font-size: 0.8em;
+	color: #999;
+}
+.short-hr {
+	width: 60%;
 }
 
 
@@ -102,10 +110,11 @@ hr {
 #breadcrumbs {
 	font-size: 0.75em;
 	margin: 3px;
-	position: absolute;
+/*	position: absolute;*/
 }
 
 #breadcrumbs a {
 	color: #A10000;
 	text-decoration: underline;
+	cursor: pointer;
 }

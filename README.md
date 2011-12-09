@@ -47,6 +47,9 @@ Notes and Ideas
 - permissions in our manifest are currently wide open !!
 - You can use cURL to make some quick, fake POSTs to the test server. eg:
     curl -XPOST -HContent-type:text/plain --data "html=<html><body><p>asdf</p></body></html>" http://localhost:8000/isAuthenticated/
+- should we get rid of the semester on each course? eg 2011Fall
+- do we want to close the extension when an external link is opened?
+
 
 Structure for Course Information Data Structure
 -----------------------------------------------
