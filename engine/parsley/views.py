@@ -63,22 +63,23 @@ def getCourses(request):
         soup = BeautifulSoup(body)
         div = soup.find(attrs={'class': 'moduleTitle'}, text='Courses Online').parent.parent.parent
         trs = div.findAll('tr')
-        trs = trs[2:-1] # remove extraneous entries like header and footer
         for tr in trs:
             course = {}
             anchor = tr.find('a')
-            course['name'] = anchor.contents[0].strip().title()
-            for attr in anchor.attrs:
-                if attr[0] == 'href':
-                    match = re.search(r'&url=(.+)', attr[1])
-                    if match.groups():
-                        course['url'] = match.group(1)
-            td = anchor.parent.nextSibling.next
-            match = re.search(r'(\w+).', td.contents[0])
-            if match.groups():
-                course['shortname'] = match.group(1)
+            # skip everything that doesn't have a link in it (like a header or unavailable course)
+            if anchor: 
+                course['name'] = anchor.contents[0].strip().title()
+                for attr in anchor.attrs:
+                    if attr[0] == 'href':
+                        match = re.search(r'&url=(.+)', attr[1])
+                        if match.groups():
+                            course['url'] = match.group(1)
+                td = anchor.parent.nextSibling.next
+                match = re.search(r'(\w+).', td.contents[0])
+                if match.groups():
+                    course['shortname'] = match.group(1)
             
-            courses.append(course)
+                courses.append(course)
         response = jsonEncode({'courses': courses})
     else:
         response = jsonEncode({'error': "You must POST to this URL with the key 'html' in the POST data."})
