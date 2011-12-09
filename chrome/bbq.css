@@ -37,11 +37,15 @@ hr {
 
 /* Major divs */
 
-#wrapper {
+.wrapper {
 	position: relative;
 	font-family: arial; 
 	width: 350px;
 	padding-bottom: 5px;
+}
+
+.hidden {
+	display: none;
 }
 
 #add-resource {
@@ -79,6 +83,7 @@ hr {
 	padding: 5px;
 	margin: 10px;
 	background-color: #0088FF;
+    cursor: pointer;
 }
 
 .small {
