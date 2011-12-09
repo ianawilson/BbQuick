@@ -33,10 +33,7 @@ function buildMain() {
 	
 	//get announcements
 	var announcements = chrome.extension.getBackgroundPage().getRecentAnnouncements(10);
-	for (i = 0; i<announcements.length; i++) {
-		announcement = $(announceHtml).html("<p class='announcementInfo'>On " + announcements[i]['date'] + " " + announcements[i]['author'] + " posted:</p><p>" + announcements[i]['details'] + "</p>");
-		$("#mainAnnouncements").append("<hr class='short-hr' />").append(announcement);
-	}
+	makeAnnouncements("#mainAnnouncements", announcements);
 	
 	runHandlers();
 }
@@ -89,6 +86,13 @@ function showCourse(courseID) {
 		$("#course").append(button)
 	}
 	
+	// announcements are always the first section
+	announcements = course['sections'][0]['subsections']
+	if (announcements.length > 0) {
+		$("#course").append("<h2>Announcements</h2>");
+		makeAnnouncements("#course", announcements);
+	}
+	
 	runHandlers();
 }
 
@@ -130,4 +134,11 @@ function showSection(courseID, sectionID) {
 	}
 	
 	runHandlers();
+}
+
+function makeAnnouncements(divSelector, announcements) {
+	for (i = 0; i<announcements.length; i++) {
+		announcement = $(announceHtml).html("<p class='announcementInfo'>On " + announcements[i]['date'] + " " + announcements[i]['author'] + " posted:</p><p>" + announcements[i]['details'] + "</p>");
+		$(divSelector).append("<hr class='short-hr' />").append(announcement);
+	}
 }

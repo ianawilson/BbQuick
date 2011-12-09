@@ -50,7 +50,6 @@ Notes and Ideas
 - should we get rid of the semester on each course? eg 2011Fall
 - do we want to close the extension when an external link is opened?
 
-
 Structure for Course Information Data Structure
 -----------------------------------------------
 
