@@ -11,6 +11,7 @@ var courses;
 var bbURL;
 var loginForm;
 var authenticated;
+var bg;
 
 function init() {
 	// get the background page
@@ -47,8 +48,19 @@ function buildWait() {
 }
 
 function buildLogin() {
-	$("#login").append("<p>please login on <a href='" + bbURL + "'>Blackboard</a></p>");
+	loginDiv = $("<div></div>");
+	login = $("<p></p><h2>BbQuick Needs You to Login</h2><p class='centered'>Please login on <a href='" + bbURL + "'>Blackboard</a>.</p>");
+	refresh = $("<a href='#' class='internal'>Refresh BbQuick manually.</a>").click(function() {
+		bg.init();
+	});
+	refreshPara = $("<p class='centered'>Already logged in? </p>").append(refresh);
+	
+	loginDiv.append(login);
+	loginDiv.append(refreshPara);
+	$("#login").append(loginDiv);
+	
 	// $("#login").append(loginForm);
+	runHandlers();
 }
 
 function buildMain() {
@@ -87,9 +99,8 @@ function runHandlers() {
 	});
 	
 	// convert anchors to tab creators
-	$(".wrapper").find('a').not('#breadcrumbs a').click(function() {
+	$(".wrapper").find('a').not('.internal').not('#breadcrumbs a').click(function() {
 		chrome.tabs.create({'url': $(this).attr('href')});
-		console.log('asdf')
 		window.close();
 	});
 }
