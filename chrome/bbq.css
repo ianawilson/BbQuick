@@ -10,10 +10,10 @@ body {
 	overflow-y: scroll;
 }
 
-a {
+/*a {
 	color: black;
 	text-decoration: none;
-}
+}*/
 
 /* Headers */
 
@@ -26,6 +26,7 @@ h1 {
 h2 {
 	font-size: 1.2em;
 	margin: 2px 0 2px;
+	text-align: center;
 }
 h3 {
 	font-size: 0.7em;
@@ -37,11 +38,19 @@ hr {
 
 /* Major divs */
 
-#wrapper {
+.centered {
+	text-align: center;
+}
+
+.wrapper {
 	position: relative;
 	font-family: arial; 
 	width: 350px;
 	padding-bottom: 5px;
+}
+
+.hidden {
+	display: none;
 }
 
 #add-resource {
@@ -63,12 +72,20 @@ hr {
 
 /* Boxes */
 
-.info {
+.announcement {
+	font-size: 0.8em;
 	width: 90%;
 /*	background-color: #FFF;*/
 /*	border-top: 1px solid black;*/
 	padding: 0 5px;
 	margin: 0 10px;
+}
+.announcementInfo {
+	font-size: 0.8em;
+	color: #999;
+}
+.short-hr {
+	width: 60%;
 }
 
 
@@ -79,6 +96,7 @@ hr {
 	padding: 5px;
 	margin: 10px;
 	background-color: #0088FF;
+    cursor: pointer;
 }
 
 .small {
@@ -97,10 +115,11 @@ hr {
 #breadcrumbs {
 	font-size: 0.75em;
 	margin: 3px;
-	position: absolute;
+/*	position: absolute;*/
 }
 
 #breadcrumbs a {
 	color: #A10000;
 	text-decoration: underline;
+	cursor: pointer;
 }

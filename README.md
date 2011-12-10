@@ -33,6 +33,11 @@ views:
 - getCourseSections
 - getCourseSubsections
 
+additional written but unused views:
+
+- getNavURL (part of failed attempt to get things from Course page)
+- getCoursesURL (ditto)
+
 
 Notes and Ideas
 ---------------
@@ -40,9 +45,10 @@ Notes and Ideas
 - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
 - CSRF in Django is turned off since this simply parses html
 - permissions in our manifest are currently wide open !!
-- You can use cURL to make some quick, fake POSTs to the test server. eg:
-    curl -XPOST -HContent-type:text/plain --data "html=<html><body><p>asdf</p></body></html>" http://localhost:8000/isAuthenticated/
-
+- should we get rid of the semester on each course? eg 2011Fall
+- do we want to close the extension when an external link is opened?
+- doesn't work for TAs (and probably teachers)
+- need to make an update courses function that won't wipe everything out
 
 Structure for Course Information Data Structure
 -----------------------------------------------
@@ -68,6 +74,8 @@ Wishlist
 - Bb login in popup if user isn't logged in already
 - proper try/except blocks for BeautifulSoup so that we don't get totally useless 500 errors
     - return json with 'error' key, find a way to deal with this / display in extension
+- ability to hide resources you are done with
+- ability to insert your own resources
 
 
 Requirements
