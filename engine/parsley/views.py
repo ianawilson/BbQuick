@@ -47,11 +47,17 @@ def isAuthenticated(request):
     if request.method == 'POST' and 'html' in request.POST:
         body = request.POST['html']
         soup = BeautifulSoup(body)
-        form = soup('form', attrs={'name': 'login'})
+        form = soup.find('div', attrs={'id': 'loginBoxFull'})
         if form:
-            response = jsonEncode({'authenticated': 'false'})
+            form.find(attrs={'id': 'loginFormText'}).extract()
+            scripts = form.findAll('script')
+            for s in scripts:
+                for attr in s.attrs:
+                    if not ('src' in attr and 'validate_login' in attr[1]):
+                        s.extract()
+            response = jsonEncode({'authenticated': False, 'loginForm': str(form)})
         else:
-            response = jsonEncode({'authenticated': 'true'})
+            response = jsonEncode({'authenticated': True, 'loginForm': None})
     else:
         response = jsonEncode({'error': "You must POST to this URL with the key 'html' in the POST data."})
     return HttpResponse(content=response)

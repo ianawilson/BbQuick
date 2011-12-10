@@ -1,6 +1,5 @@
 $(document).ready(function() {
 	init();
-	buildMain();
 });
 
 var buttonHtml = "<div class='button'></div>";
@@ -10,16 +9,54 @@ var breadcrumbHtml = '<div id="breadcrumbs"><a>home</a> &raquo; </div>';
 
 var courses;
 var bbURL;
+var loginForm;
+var authenticated;
 
 function init() {
-	// get the courses from the background page
-	courses = chrome.extension.getBackgroundPage().courses;
+	// get the background page
+	bg = chrome.extension.getBackgroundPage();
 	
-	// get the blackboard url from the background page
-	bbURL = chrome.extension.getBackgroundPage().bbURL;
+	// get the courses, blackboard url, and login form
+	courses = bg.courses;
+	bbURL = bg.bbURL;
+	loginForm = bg.loginForm;
+	authenticated = bg.authenticated;
+	
+	if (authenticated && courses) {
+		// this try catch block stops us from showing the popup before all of the data is loaded
+		try {
+			buildMain();
+			showMain();
+		} catch(err) {
+			buildWait();
+			showWait();
+		}
+		
+	} else if (loginForm) {
+		buildLogin();
+		showLogin();
+	} else {
+		buildWait();
+		showWait();
+	}
+}
+
+function buildWait() {
+	wait = $("<p></p><h2>BbQuick is Still Working</h2><p class='centered'>Please reload the popup in a moment.</p>");
+	$("#wait").append(wait);
+}
+
+function buildLogin() {
+	$("#login").append("<p>please login on <a href='" + bbURL + "'>Blackboard</a></p>");
+	// $("#login").append(loginForm);
 }
 
 function buildMain() {
+	// throw an error to jump out of this if courses aren't loaded yet
+	if (!courses.length > 0) {
+		throw "Courses not loaded yet.";
+	}
+	
 	// add the course buttons
 	for (i in courses) {
 		var div = $(buttonHtml).html(courses[i]["name"]);
@@ -32,7 +69,9 @@ function buildMain() {
 	}
 	
 	//get announcements
-	var announcements = chrome.extension.getBackgroundPage().getRecentAnnouncements(10);
+	var announcements = chrome.extension.getBackgroundPage().getRecentAnnouncements();
+	
+	// this also throws exceptions which we catch above if all of the subsections haven't been loaded yet
 	makeAnnouncements("#mainAnnouncements", announcements);
 	
 	runHandlers();
@@ -46,11 +85,34 @@ function runHandlers() {
 	$(".button").mouseout(function() {
 		$(this).removeClass("mouseover");
 	});
+	
+	// convert anchors to tab creators
+	$(".wrapper").find('a').not('#breadcrumbs a').click(function() {
+		chrome.tabs.create({'url': $(this).attr('href')});
+		console.log('asdf')
+		window.close();
+	});
+}
+
+function showWait() {
+	$(".wrapper").hide();
+	$("#wait").show();
+	
+	runHandlers();
+}
+
+function showLogin() {
+	$(".wrapper").hide();
+	$("#login").show();
+	
+	runHandlers();
 }
 
 function showMain() {
 	$(".wrapper").hide();
-	$("#main").show()
+	$("#main").show();
+	
+	runHandlers();
 }
 
 function showCourse(courseID) {
@@ -128,7 +190,8 @@ function showSection(courseID, sectionID) {
 		button = $(buttonHtml).append(subsections[i]['name']);
 		button.attr('target', bbURL + subsections[i]['url']);
 		button.click(function() {
-			chrome.tabs.create({'url': $(this).attr('target')})
+			chrome.tabs.create({'url': $(this).attr('target')});
+			window.close();
 		});
 		$("#section").append(button);
 	}

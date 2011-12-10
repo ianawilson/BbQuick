@@ -10,10 +10,10 @@ body {
 	overflow-y: scroll;
 }
 
-a {
+/*a {
 	color: black;
 	text-decoration: none;
-}
+}*/
 
 /* Headers */
 
@@ -37,6 +37,10 @@ hr {
 }
 
 /* Major divs */
+
+.centered {
+	text-align: center;
+}
 
 .wrapper {
 	position: relative;

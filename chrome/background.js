@@ -7,19 +7,19 @@ var contentURL = null;
 var coursesURL = null;
 var authenticated = false;
 var courses = new Array(0);
+var loginForm = null;
 
-$(document).ready(function() {
+$(document).ready(init);
+
+function init() {
 	getContentURL(function(data) {
 		response = JSON.parse(data);
 		contentURL = response["contentURL"];
 	});
-	// getCoursesURL(function(data) {
-	// 	response = JSON.parse(data);
-	// 	console.log(response)
-	// 	coursesURL = response['contentURL'];
-	// });
 	isAuthenticated(start);
-});
+	// refresh in 5 minutes
+	setTimeout(init, 5*60*1000);
+}
 
 /**
  * Whole bunch of async
@@ -28,6 +28,7 @@ $(document).ready(function() {
 function start(data) {
 	response = JSON.parse(data);
 	authenticated = response["authenticated"];
+	loginForm = response["loginForm"];
 	getCourses();
 }
 
@@ -66,6 +67,7 @@ function isAuthenticated(success) {
 		});
 	});
 }
+
 
 function getCourses() {
 	if (authenticated) { 
