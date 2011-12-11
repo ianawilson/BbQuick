@@ -7,6 +7,7 @@ var contentURL = null;
 var coursesURL = null;
 var authenticated = false;
 var courses = new Array(0);
+var newCourses = new Array(0);
 var loginForm = null;
 
 $(document).ready(init);
@@ -19,6 +20,36 @@ function init() {
 	isAuthenticated(start);
 	// refresh in 5 minutes
 	setTimeout(init, 5*60*1000);
+	// update courses 1 minute from now, after they're probably gotten (2 minutes is safer, 4 is safest, but I don't want
+	// to put it off too long)
+	setTimeout(updateCourses, 1*60*1000)
+}
+
+function updateCourses() {
+	// go through newCourses
+	for (i in newCourses) {
+		oldIndex = findSubMember(courses, 'shortname', newCourses[i]['shortname']);
+		if (oldIndex >= 0) {
+			// exists, update it
+			course = courses[i];
+			
+			// splice it back in when we're done (might work?)
+			courses.splice(i, 1, course);
+		} else {
+			// doesn't exist, grab it, then use splice to insert it
+			course = newCourses[i];
+			courses.splice(i, 0, course);
+		}
+	}
+	
+}
+function findSubMember(arr, member, value) {
+	for (i in arr) {
+		if (arr1[i][member] == value) {
+			return i;
+		}
+	}
+	return -1;
 }
 
 /**
@@ -74,8 +105,8 @@ function getCourses() {
 		$.get(bbURL + contentURL, function(data) {
 			$.post(engineURL + '/getCourses/', {'html': data}, function(data) {
 				response = JSON.parse(data);
-				courses = response['courses'];
-				if (courses.length > 0) {
+				newCourses = response['courses'];
+				if (newCourses.length > 0) {
 					for (i in courses) {
 						course = courses[i];
 						getCourseSections(course);
@@ -124,7 +155,7 @@ function getRecentAnnouncements(limit) {
 	
 	for (course in courses) {
 		// announcements are always the first section, and they are guaranteed to exist by parsley
-		theseAnnce = courses[course]['sections'][0]['subsections']
+		theseAnnce = newCourses[course]['sections'][0]['subsections']
 		announcements = announcements.concat(theseAnnce)
 	}
 	
