@@ -22,6 +22,6 @@
     }
   ],
 
-  "content_security_policy": "default-src 'self' http://my.rochester.edu http://localhost:8000; style-src 'self'"
+  "content_security_policy": "default-src 'self' http://my.rochester.edu http://localhost:8000; style-src 'self' 'unsafe-inline'"
 
 }

@@ -106,7 +106,6 @@ function runHandlers() {
 		chrome.tabs.create({'url': $(this).attr('href')});
 		window.close();
 	});
-}
 
 function showWait() {
 	$(".wrapper").hide();
