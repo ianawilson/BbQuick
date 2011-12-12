@@ -60,6 +60,7 @@ function buildLogin() {
 	$("#login").append(loginDiv);
 	
 	// $("#login").append(loginForm);
+	
 	runHandlers();
 }
 
@@ -86,6 +87,10 @@ function buildMain() {
 	// this also throws exceptions which we catch above if all of the subsections haven't been loaded yet
 	makeAnnouncements("#mainAnnouncements", announcements);
 	
+	var hideToggle = "<span class='hideToggle'>X</span>";
+	
+	$(".button").not(".small").append(hideToggle);
+	
 	runHandlers();
 }
 
@@ -97,15 +102,26 @@ function runHandlers() {
 	$(".button").mouseout(function() {
 		$(this).removeClass("mouseover");
 	});
-
-}
-
+	
+	var hideToggle = "<span class='hideToggle'>X</span>";
+	
+	//hideToggle.click(function() {
+	//	showHide();
+	//});
+	
+	$(".button:visible").not(".small").append(hideToggle);
+	console.log("runHandlers");
 	
 	// convert anchors to tab creators
 	$(".wrapper").find('a').not('.internal').not('#breadcrumbs a').click(function() {
 		chrome.tabs.create({'url': $(this).attr('href')});
 		window.close();
 	});
+}
+
+//function showHide() {
+//	this.parent.hide();
+//}
 
 function showWait() {
 	$(".wrapper").hide();
@@ -125,7 +141,7 @@ function showMain() {
 	$(".wrapper").hide();
 	$("#main").show();
 	
-	runHandlers();
+	//runHandlers();
 }
 
 function showCourse(courseID) {
@@ -201,7 +217,11 @@ function showSection(courseID, sectionID) {
 	subsections = section['subsections'];
 	for (i in subsections) {
 		button = $(buttonHtml).append(subsections[i]['name']);
-		button.attr('target', bbURL + subsections[i]['url']);
+		if (subsections[i]['url'][0] == "/") {
+			button.attr('target', bbURL + subsections[i]['url']);
+		} else {
+			button.attr('target', subsections[i]['url']);
+		}
 		button.click(function() {
 			chrome.tabs.create({'url': $(this).attr('target')});
 			window.close();

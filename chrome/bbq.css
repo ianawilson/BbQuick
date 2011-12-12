@@ -99,6 +99,10 @@ hr {
     cursor: pointer;
 }
 
+.hideToggle {
+	float: right;
+}
+
 .small {
 	position: absolute;
 	right: 5px;
