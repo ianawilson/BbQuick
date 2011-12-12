@@ -107,6 +107,10 @@ hr {
 	cursor: pointer;
 }
 
+.hiddenButton {
+	background-color: #E3E4E6;
+}
+
 .showAllToggle {
 	font-size: .75em;
 	margin-left: 10px;
@@ -133,6 +137,12 @@ hr {
 }
 
 #breadcrumbs a {
+	color: #A10000;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.internal {
 	color: #A10000;
 	text-decoration: underline;
 	cursor: pointer;
