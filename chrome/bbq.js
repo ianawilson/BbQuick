@@ -156,6 +156,15 @@ function hideTimeout(element) {
 		$(element).prev().css("background-color", "#0088FF");
 		$(element).html("<img src='uparrow.png' /> HIDE");
 		courses[$(element).prev().attr('target')]["hidden"] = false;
+		$(element).unbind();
+		$(element).click(function() {
+			$(this).prev().slideUp();
+			$(this).slideUp();
+
+			//modifies button color and hide label for when shown to unhide
+			//set timeout used so it doesn't change until hidden
+			var t = setTimeout(hideTimeout, 500, $(this));
+		});
 	});
 }
 
