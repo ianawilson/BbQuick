@@ -107,6 +107,7 @@ def getCourseSections(request):
         ul = soup.find(attrs={'id': 'courseMenuPalette_contents'})
         lis = ul.findAll('li')[:-3] # remove final dividers and Course Tools
         for li in lis:
+            print li
             section = {}
             anchor = li.next.next
             section['name'] = anchor.next.contents[0]
