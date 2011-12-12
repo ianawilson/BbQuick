@@ -213,15 +213,24 @@ function showCourse(courseID) {
 	sections = course['sections'];
 	// start at 1 because the first element is always announcements, which we don't want a button for
 	for (i = 1; i < sections.length; i++) {
-		console.log(i)
 		button = $(buttonHtml).html(sections[i]['name']);
-		button.attr('target', i);
-		button.click(function() {
-			showSection(courseID, $(this).attr('target'));
-		});
+		if (sections[i]['subsections'] == null || sections[i]['subsections'].length == 0) {
+			button.attr('target', sections[i]['url']);
+			button.click(function() {
+				url = $(this).attr('target');
+				if (url[0] == '/') {
+					url = bbURL + url;
+				}
+				chrome.tabs.create({'url': url});
+			});
+		} else {
+			button.attr('target', i);
+			button.click(function() {
+				showSection(courseID, $(this).attr('target'));
+			});
+		}
 		$("#course").append(button)
 	}
-	
 	// announcements are always the first section
 	announcements = course['sections'][0]['subsections']
 	if (announcements.length > 0) {
@@ -328,6 +337,10 @@ function showAddPage(courseID, sectionID) {
 	
 	$("#add").append("<h2>with the name</h2>");
 	$("#add").append("<input id='addName'></input>");
+	
+	chrome.tabs.getSelected(null, function(tab) {
+		$("#addName").val(tab.title);
+	});
 	
 	cancel = $("<div id='addCancel' class='button'>Cancel</div>");
 	cancel.click(showMain);
