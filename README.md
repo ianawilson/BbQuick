@@ -12,6 +12,7 @@ interface.
 To Do
 -----
 
+- Delete old course entries that do no exist any more
 
 Scraping Process
 ----------------
