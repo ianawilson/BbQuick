@@ -1,0 +1,21 @@
+h1 {
+    display: inline;
+}
+
+p {
+    font-size: 1.35em;
+}
+
+hr {
+    width: 25%;
+}
+
+body {
+    background-color: #F3FFFF;
+}
+
+#presentation {
+    font-family: "Arial";
+    padding-left: 2%;
+    margin-right: 40%;
+}
