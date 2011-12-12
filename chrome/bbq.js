@@ -87,14 +87,17 @@ function buildMain() {
 	// this also throws exceptions which we catch above if all of the subsections haven't been loaded yet
 	makeAnnouncements("#mainAnnouncements", announcements);
 	
-	var hideToggle = "<span class='hideToggle'>X</span>";
-	
-	$(".button").not(".small").append(hideToggle);
-	
-	runHandlers();
+
+	runHandlers(false);
 }
 
-function runHandlers() {
+function runHandlers(visibleOnly) {
+	if (visibleOnly == null || visibleOnly) {
+		wrapperSelector = ".wrapper:visible";
+	} else {
+		wrapperSelector = ".wrapper";
+	}
+	
 	// add highlighting effect to the course buttons
 	$(".button").mouseover(function() {
 		$(this).addClass("mouseover");
@@ -109,11 +112,12 @@ function runHandlers() {
 	//	showHide();
 	//});
 	
-	$(".button:visible").not(".small").append(hideToggle);
-	console.log("runHandlers");
+	$(wrapperSelector).(".button").not(".small").append(hideToggle);
 	
 	// convert anchors to tab creators
-	$(".wrapper").find('a').not('.internal').not('#breadcrumbs a').click(function() {
+	
+	$(wrapperSelector).find('a').not('.internal').not('#breadcrumbs a').click(function() {
+		console.log('asdf');
 		chrome.tabs.create({'url': $(this).attr('href')});
 		window.close();
 	});
@@ -122,6 +126,7 @@ function runHandlers() {
 //function showHide() {
 //	this.parent.hide();
 //}
+
 
 function showWait() {
 	$(".wrapper").hide();
@@ -140,8 +145,6 @@ function showLogin() {
 function showMain() {
 	$(".wrapper").hide();
 	$("#main").show();
-	
-	//runHandlers();
 }
 
 function showCourse(courseID) {
