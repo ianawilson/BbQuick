@@ -20,32 +20,58 @@ function init() {
 	isAuthenticated(start);
 	// refresh in 5 minutes
 	setTimeout(init, 5*60*1000);
-	// update courses 1 minute from now, after they're probably gotten (2 minutes is safer, 4 is safest, but I don't want
+	// update courses 30 seconds from now, after they're probably gotten (2 minutes is safer, 4 is safest, but I don't want
 	// to put it off too long)
-	setTimeout(updateCourses, 1*60*1000)
+	setTimeout(updateCourses, 30*1000);
 }
 
 function updateCourses() {
+	console.log('Starting to update courses.');
 	// go through newCourses
-	for (i in newCourses) {
-		oldIndex = findSubMember(courses, 'shortname', newCourses[i]['shortname']);
+	for (newIndex in newCourses) {
+		oldIndex = findSubMember(courses, 'shortname', newCourses[newIndex]['shortname']);
 		if (oldIndex >= 0) {
+			console.log("Updating course " + newCourses[newIndex]['shortname']);
 			// exists, update it
-			course = courses[i];
+			courses[oldIndex]['name'] = newCourses[newIndex]['name'];
 			
-			// splice it back in when we're done (might work?)
-			courses.splice(i, 1, course);
+			// run through sections
+			newSections = newCourses[newIndex]['sections'];
+			
+			for (newSectionIndex in newSections) {
+				oldSectionIndex = findSubMember(courses[oldIndex]['sections'], 'name', newSections[newSectionIndex]['name']);
+				if (oldSectionIndex >= 0) {
+					console.log("  Updating section " + newSections[newSectionIndex]['name']);
+					courses[oldIndex]['sections'][oldSectionIndex]['url'] = newSections[newSectionIndex]['url'];
+					
+					// run through subsections
+					newSubsections = newSections[newSectionIndex]['subsections'];
+					
+					for (newSubsectionIndex in newSubsections) {
+						oldSubsectionIndex = findSubMember(courses[oldIndex]['sections'][oldSectionIndex]['subsections'], 'details', newSubsections[newSubsectionIndex]['details']);
+						
+						if (oldSubsectionIndex >= 0) {
+							console.log("    Updating subsection " + newSubsections[newSubsectionIndex]['name']);
+							courses[oldIndex]['sections'][oldSectionIndex]['subsections'][oldSubsectionIndex]['author'] = newSubsections[newSubsectionIndex]['author'];
+							courses[oldIndex]['sections'][oldSectionIndex]['subsections'][oldSubsectionIndex]['date'] = newSubsections[newSubsectionIndex]['date'];
+							courses[oldIndex]['sections'][oldSectionIndex]['subsections'][oldSubsectionIndex]['name'] = newSubsections[newSubsectionIndex]['name'];
+						}
+					}
+				} else {
+					// section doesn't exist, grab it, then splice to insert it
+					courses[oldIndex]['sections'].splice(newIndex, 0, newSections[newSectionIndex]);
+				}
+			}
 		} else {
-			// doesn't exist, grab it, then use splice to insert it
-			course = newCourses[i];
-			courses.splice(i, 0, course);
+			// course doesn't exist, grab it, then use splice to insert it
+			courses.splice(newIndex, 0, newCourses[newIndex]);
 		}
 	}
-	
+	console.log("Done updating courses.");
 }
 function findSubMember(arr, member, value) {
 	for (i in arr) {
-		if (arr1[i][member] == value) {
+		if (arr[i][member] == value) {
 			return i;
 		}
 	}
@@ -107,8 +133,8 @@ function getCourses() {
 				response = JSON.parse(data);
 				newCourses = response['courses'];
 				if (newCourses.length > 0) {
-					for (i in courses) {
-						course = courses[i];
+					for (i in newCourses) {
+						course = newCourses[i];
 						getCourseSections(course);
 					}
 				}
