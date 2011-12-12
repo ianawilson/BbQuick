@@ -4,7 +4,7 @@ $(document).ready(function() {
 
 var buttonHtml = "<div class='button'></div>";
 var announceHtml = "<div class='announcement'></div>";
-var addPageHtml = '<div class="small button" title="Add the current page as a resource for this course.">+ add page</div>';
+var addPageHtml = '<div class="small button" title="Add the active tab as a resource for this course.">+ add active tab</div>';
 var breadcrumbHtml = '<div id="breadcrumbs"><a>home</a> &raquo; </div>';
 var showAllHtml = '<span class="showAllToggle">SHOW ALL</span>';
 
