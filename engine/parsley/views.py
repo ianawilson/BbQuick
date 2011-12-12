@@ -108,7 +108,6 @@ def getCourseSections(request):
         lis = ul.findAll('li')
         for li in lis:
             skip = False
-            li.attrs
             for attr in li.attrs:
                 # remove dividers
                 if attr[0] == 'class' and 'divider' in attr[1]:
