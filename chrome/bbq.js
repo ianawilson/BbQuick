@@ -147,7 +147,7 @@ function runHandlers(visibleOnly) {
 }
 
 function hideTimeout(element) {
-	$(element).prev().css("background-color", "#247CC9");
+	$(element).prev().css("background-color", "#B8B9BA");
 	$(element).html("<img src='downarrow.png' /> SHOW");
 	courses[$(element).prev().attr('target')]["hidden"] = true;
 	
