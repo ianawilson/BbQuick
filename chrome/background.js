@@ -22,7 +22,7 @@ function init() {
 	setTimeout(init, 5*60*1000);
 	// update courses 30 seconds from now, after they're probably gotten (2 minutes is safer, 4 is safest, but I don't want
 	// to put it off too long)
-	setTimeout(updateCourses, 30*1000);
+	setTimeout(updateCourses, 10*1000);
 }
 
 function updateCourses() {
