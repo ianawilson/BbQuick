@@ -183,6 +183,12 @@ function getRecentAnnouncements(limit) {
 		theseAnnce = newCourses[course]['sections'][0]['subsections']
 		announcements = announcements.concat(theseAnnce)
 	}
+	// ======= REMOVE BAD ELEMENTS FROM HERE ========
+	for (i in announcements) {
+		if (announcements[i]['author'] == null) {
+			announcements.splice(i, 1);
+		}
+	}
 	
 	announcements.sort(function(a, b) {
 		console.log('===')

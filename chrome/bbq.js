@@ -300,8 +300,10 @@ function showSection(courseID, sectionID) {
 
 function makeAnnouncements(divSelector, announcements) {
 	for (i = 0; i<announcements.length; i++) {
-		announcement = $(announceHtml).html("<p class='announcementInfo'>On " + announcements[i]['date'] + " " + announcements[i]['author'] + " posted:</p><p>" + announcements[i]['details'] + "</p>");
-		$(divSelector).append("<hr class='short-hr' />").append(announcement);
+		if (announcements[i]['author']) {
+			announcement = $(announceHtml).html("<p class='announcementInfo'>On " + announcements[i]['date'] + " " + announcements[i]['author'] + " posted:</p><p>" + announcements[i]['details'] + "</p>");
+			$(divSelector).append("<hr class='short-hr' />").append(announcement);
+		}
 	}
 }
 
