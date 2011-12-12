@@ -107,18 +107,15 @@ def getCourseSections(request):
         ul = soup.find(attrs={'id': 'courseMenuPalette_contents'})
         lis = ul.findAll('li')
         for li in lis:
-            section = {}
-            anchor = li.next.next
-            section['name'] = anchor.next.contents[0]
-            section['url'] = anchor['href']
             skip = False
+            li.attrs
             for attr in li.attrs:
                 # remove dividers
                 if attr[0] == 'class' and 'divider' in attr[1]:
                     skip = True
-                # remove Course Tools
-                if li.text == 'Course Tools':
-                    skip = True
+            # remove Course Tools
+            if li.text == 'Course Tools':
+                skip = True
             
             if not skip:
                 section = {}
@@ -126,9 +123,9 @@ def getCourseSections(request):
                 section['name'] = anchor.next.contents[0]
                 section['url'] = anchor['href']
             
-            # skip announcements for everything, they were added manually at the beginning
-            if not section['name'] == 'Announcements':
-                sections.append(section)
+                # skip announcements for everything, they were added manually at the beginning
+                if not section['name'] == 'Announcements':
+                    sections.append(section)
         
         response = jsonEncode({'sections': sections})
     else:
