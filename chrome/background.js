@@ -178,7 +178,6 @@ function getRecentAnnouncements(limit) {
 	}
 	
 	announcements = []
-	
 	for (course in courses) {
 		// announcements are always the first section, and they are guaranteed to exist by parsley
 		theseAnnce = newCourses[course]['sections'][0]['subsections']
@@ -186,7 +185,13 @@ function getRecentAnnouncements(limit) {
 	}
 	
 	announcements.sort(function(a, b) {
+		console.log('===')
+		console.log(a)
+		console.log(b)
 		// b - a so that they are sorted with the most recent (highest) first
+		if (b == null) {
+			return a;
+		}
 		return announceSorted(b) - announceSorted(a);
 	});
 	
@@ -197,6 +202,10 @@ function getRecentAnnouncements(limit) {
 }
 function announceSorted(item) {
 	ms = 0;
+	console.log(item)
+	if (item['date'] == null) {
+		return 0;
+	}
 	if (item['date'].length > 0) {
 		ms = Date.parse(item['date']);
 	}
