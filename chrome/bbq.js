@@ -6,6 +6,7 @@ var buttonHtml = "<div class='button'></div>";
 var announceHtml = "<div class='announcement'></div>";
 var addPageHtml = '<div class="small button" title="Add the current page as a resource for this course.">+ add page</div>';
 var breadcrumbHtml = '<div id="breadcrumbs"><a>home</a> &raquo; </div>';
+var showAllHtml = '<span class="showAllToggle">SHOW ALL</span>';
 
 var courses;
 var bbURL;
@@ -70,6 +71,8 @@ function buildMain() {
 		throw "Courses not loaded yet.";
 	}
 	
+	$("#courseDiv").append(showAllHtml);
+	
 	// add the course buttons
 	for (i in courses) {
 		var div = $(buttonHtml).html(courses[i]["name"]);
@@ -106,13 +109,23 @@ function runHandlers(visibleOnly) {
 		$(this).removeClass("mouseover");
 	});
 	
-	var hideToggle = "<span class='hideToggle'>X</span>";
+	var hideToggle = "<span class='hideToggle'><img src='uparrow.png' /> HIDE</span>";
 	
-	//hideToggle.click(function() {
-	//	showHide();
-	//});
+	$(wrapperSelector + " .button").not(".small").after(hideToggle);
 	
-	$(wrapperSelector + " .button").not(".small").append(hideToggle);
+	$(".hideToggle").click(function() {
+		$(this).prev().slideUp();
+		$(this).slideUp();
+
+		//modifies button color and hide label for when shown to unhide
+		//set timeout used so it doesn't change until hidden
+		var t = setTimeout(hideTimeout, 500, $(this));
+	});
+	
+	$(".showAllToggle").click(function() {
+		$(".button").slideDown();
+		$(".button").next().slideDown();
+	});
 	
 	// convert anchors to tab creators
 	
@@ -123,10 +136,18 @@ function runHandlers(visibleOnly) {
 	});
 }
 
-//function showHide() {
-//	this.parent.hide();
-//}
-
+function hideTimeout(element) {
+	$(element).prev().css("background-color", "#247CC9");
+	$(element).html("<img src='downarrow.png' /> SHOW");
+	courses[$(element).prev().attr('target')]["hidden"] = true;
+	
+	$(element).unbind("click");
+	$(element).click(function() {
+		$(element).prev().css("background-color", "#0088FF");
+		$(element).html("<img src='uparrow.png' /> HIDE");
+		courses[$(element).prev().attr('target')]["hidden"] = false;
+	});
+}
 
 function showWait() {
 	$(".wrapper").hide();
@@ -166,6 +187,8 @@ function showCourse(courseID) {
 	
 	// add title
 	$("#course").append("<h1>" + course['name'] + "</h1>");
+	
+	$("#course").append(showAllHtml);
 	
 	// build sections
 	sections = course['sections'];
@@ -215,6 +238,8 @@ function showSection(courseID, sectionID) {
 	$("#section").append(breadcrumb);
 	
 	$("#section").append("<h1>" + section['name'] + "</h1>");
+	
+	$("#section").append(showAllHtml);
 	
 	// add subsections
 	subsections = section['subsections'];

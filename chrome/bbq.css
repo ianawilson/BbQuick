@@ -95,12 +95,22 @@ hr {
 	border: 1px solid black;
 	padding: 5px;
 	margin: 10px;
+	margin-bottom: 2px;
 	background-color: #0088FF;
     cursor: pointer;
 }
 
 .hideToggle {
-	float: right;
+	/*float: right;*/
+	font-size: .75em;
+	margin-left: 290px;
+	cursor: pointer;
+}
+
+.showAllToggle {
+	font-size: .75em;
+	margin-left: 10px;
+	cursor: pointer;
 }
 
 .small {
