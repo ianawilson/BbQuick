@@ -13,6 +13,9 @@ To Do
 -----
 
 - Delete old course entries that do no exist any more
+- Fix the double click() event on anchors
+- should we get rid of the semester on each course? eg 2011Fall
+- do we want to close the extension when an external link is opened?
 
 Scraping Process
 ----------------
@@ -46,10 +49,7 @@ Notes and Ideas
 - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
 - CSRF in Django is turned off since this simply parses html
 - permissions in our manifest are currently wide open !!
-- should we get rid of the semester on each course? eg 2011Fall
-- do we want to close the extension when an external link is opened?
 - doesn't work for TAs (and probably teachers)
-- need to make an update courses function that won't wipe everything out
 
 Structure for Course Information Data Structure
 -----------------------------------------------
