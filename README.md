@@ -12,7 +12,8 @@ interface.
 To Do
 -----
 
-- If a section has no children, just run the URL
+- Being able to make custom sections
+- Being able to permanently remove added content
 - Delete old course entries that do no exist any more
 - should we get rid of the semester on each course? eg 2011Fall
 
