@@ -31,7 +31,7 @@ function updateCourses() {
 	for (newIndex in newCourses) {
 		oldIndex = findSubMember(courses, 'shortname', newCourses[newIndex]['shortname']);
 		if (oldIndex >= 0) {
-			console.log("Updating courses " + newCourses[newIndex]['shortname']);
+			console.log("Updating course " + newCourses[newIndex]['shortname']);
 			// exists, update it
 			courses[oldIndex]['name'] = newCourses[newIndex]['name'];
 			
