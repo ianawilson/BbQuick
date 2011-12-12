@@ -12,10 +12,10 @@ interface.
 To Do
 -----
 
+- Being able to make custom sections
+- Being able to permanently remove added content
 - Delete old course entries that do no exist any more
-- Fix the double click() event on anchors
 - should we get rid of the semester on each course? eg 2011Fall
-- do we want to close the extension when an external link is opened?
 
 Scraping Process
 ----------------
