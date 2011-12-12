@@ -6,7 +6,7 @@ var buttonHtml = "<div class='button'></div>";
 var announceHtml = "<div class='announcement'></div>";
 var addPageHtml = '<div class="small button" title="Add the active tab as a resource for this course.">+ add active tab</div>';
 var breadcrumbHtml = '<div id="breadcrumbs"><a>home</a> &raquo; </div>';
-var showAllHtml = '<span class="showAllToggle">SHOW ALL</span>';
+var showAllHtml = '<a class="showAllToggle internal" href="#">edit - show / hide</>';
 
 var courses;
 var bbURL;
@@ -116,23 +116,16 @@ function runHandlers(visibleOnly) {
 		$(this).removeClass("mouseover");
 	});
 	
-	var hideToggle = "<span class='hideToggle'><img src='uparrow.png' /> HIDE</span>";
+	var hideToggle = "<span class='hideToggle'><img src='uparrow.png' /> <span class='internal'>hide</span></span>";
 	
 	$(wrapperSelector + " .button").not(".small").after(hideToggle);
+	$(".hideToggle").hide();
 	
 	$(".hideToggle").click(function() {
-		$(this).prev().slideUp();
-		$(this).slideUp();
-
-		//modifies button color and hide label for when shown to unhide
-		//set timeout used so it doesn't change until hidden
 		var t = setTimeout(hideTimeout, 500, $(this));
 	});
 	
-	$(".showAllToggle").click(function() {
-		$(".button").slideDown();
-		$(".button").next().slideDown();
-	});
+	$(".showAllToggle").click(enterEdit);
 	
 	var buttons = $(".button").not(".small");
 	for (i = 0; i<buttons.length; i++) {
@@ -153,16 +146,55 @@ function runHandlers(visibleOnly) {
 	});
 }
 
+function enterEdit() {
+	$(".showAllToggle").html("save");
+	$(".showAllToggle").unbind("click", enterEdit);
+	$(".showAllToggle").click(exitEdit);
+	
+	$(".button").slideDown();
+	$(".button").next().slideDown();
+}
+
+function exitEdit() {
+	$(".showAllToggle").html("edit - show / hide");
+	$(".showAllToggle").unbind("click", exitEdit);
+	$(".showAllToggle").click(enterEdit);
+	
+	var buttons = $(".button").not(".small");
+	for (i = 0; i<buttons.length; i++) {
+		if (courses[$(buttons[i]).attr('target')]["hidden"]) {
+			$(buttons[i]).hide();
+			$(buttons[i]).next().hide();
+			hideTimeout($(buttons[i]).next());
+		}
+	}
+	
+	$(".button").not(".small").next().slideUp();
+
+}
+
 function hideTimeout(element) {
-	$(element).prev().css("background-color", "#B8B9BA");
-	$(element).html("<img src='downarrow.png' /> SHOW");
+	$(element).prev().addClass("hiddenButton");
+	$(element).html("<img src='downarrow.png' /> <span class='internal'>show</span>");
 	courses[$(element).prev().attr('target')]["hidden"] = true;
 	
 	$(element).unbind("click");
 	$(element).click(function() {
-		$(element).prev().css("background-color", "#0088FF");
-		$(element).html("<img src='uparrow.png' /> HIDE");
+		$(element).prev().removeClass("hiddenButton");
+		$(element).html("<img src='uparrow.png' /> <span class='internal'>hide</span>");
+		
+		$(element).prev().mouseover(function() {
+			$(this).addClass("mouseover");
+		});
+		$(element).prev().mouseout(function() {
+			$(this).removeClass("mouseover");
+		});
+		
 		courses[$(element).prev().attr('target')]["hidden"] = false;
+		$(element).unbind("click");
+		$(element).click(function() {
+			var t = setTimeout(hideTimeout, 500, $(this));
+		});
 	});
 }
 
