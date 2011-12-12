@@ -112,7 +112,7 @@ function runHandlers(visibleOnly) {
 	//	showHide();
 	//});
 	
-	$(wrapperSelector).(".button").not(".small").append(hideToggle);
+	$(wrapperSelector + " .button").not(".small").append(hideToggle);
 	
 	// convert anchors to tab creators
 	
