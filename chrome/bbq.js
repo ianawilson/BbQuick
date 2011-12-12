@@ -30,6 +30,7 @@ function init() {
 			buildMain();
 			showMain();
 		} catch(err) {
+			console.log(err.stack);
 			buildWait();
 			showWait();
 		}
