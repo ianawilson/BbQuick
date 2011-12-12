@@ -127,6 +127,16 @@ function runHandlers(visibleOnly) {
 		$(".button").next().slideDown();
 	});
 	
+	var buttons = $(".button").not(".small");
+	for (i = 0; i<buttons.length; i++) {
+
+		if (courses[$(buttons[i]).attr('target')]["hidden"]) {
+			$(buttons[i]).hide();
+			$(buttons[i]).next().hide();
+			hideTimeout($(buttons[i]).next());
+		}
+	}	
+	
 	// convert anchors to tab creators
 	
 	$(wrapperSelector).find('a').not('.internal').not('#breadcrumbs a').click(function() {
