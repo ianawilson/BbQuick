@@ -110,6 +110,10 @@ hr {
 	background-color: #5CB3FF;
 }
 
+.inactive {
+	background-color: #AAA;
+}
+
 /* Breadcrumbs */
 
 #breadcrumbs {

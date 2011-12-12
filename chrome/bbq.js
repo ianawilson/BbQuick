@@ -52,6 +52,7 @@ function buildLogin() {
 	login = $("<p></p><h2>BbQuick Needs You to Login</h2><p class='centered'>Please login on <a href='" + bbURL + "'>Blackboard</a>.</p>");
 	refresh = $("<a href='#' class='internal'>Refresh BbQuick manually.</a>").click(function() {
 		bg.init();
+		window.close();
 	});
 	refreshPara = $("<p class='centered'>Already logged in? </p>").append(refresh);
 	
@@ -68,6 +69,12 @@ function buildMain() {
 	if (!courses.length > 0) {
 		throw "Courses not loaded yet.";
 	}
+	
+	addJq = $(addPageHtml);
+	addJq.click(function() {
+		showAddPage();
+	});
+	$("#main").prepend(addJq);
 	
 	// add the course buttons
 	for (i in courses) {
@@ -139,8 +146,11 @@ function showCourse(courseID) {
 	course = courses[courseID];
 	
 	// add the add page button
-	$("#course").append(addPageHtml);
-	$("#course").show();
+	addJq = $(addPageHtml)
+	addJq.click(function() {
+		showAddPage(courseID);
+	});
+	$("#course").append(addJq);
 	
 	// build the breadcrumb
 	breadcrumb = $(breadcrumbHtml).append(course['shortname']);
@@ -172,6 +182,8 @@ function showCourse(courseID) {
 		makeAnnouncements("#course", announcements);
 	}
 	
+	$("#course").show();
+	
 	runHandlers();
 }
 
@@ -183,8 +195,11 @@ function showSection(courseID, sectionID) {
 	section = course['sections'][sectionID];
 	
 	// add the add page button
-	$("#section").append(addPageHtml);
-	$("#section").show();
+	addJq = $(addPageHtml);
+	addJq.click(function() {
+		showAddPage(courseID, sectionID);
+	});
+	$("#section").append(addJq);
 	
 	// build the breadcrumb
 	breadcrumb = $(breadcrumbHtml)
@@ -213,6 +228,8 @@ function showSection(courseID, sectionID) {
 		$("#section").append(button);
 	}
 	
+	$("#section").show();
+	
 	runHandlers();
 }
 
@@ -223,3 +240,87 @@ function makeAnnouncements(divSelector, announcements) {
 	}
 }
 
+function showAddPage(courseID, sectionID) {
+	$("#add").empty();
+	
+	if (!courseID) {
+		courseID = 0;
+	}
+	if (!sectionID) {
+		sectionID = -1;
+	}
+	console.log(courseID);
+	console.log(sectionID);
+	
+	$("#add").append("<h2>Add the active tab as a resource for</h2>");
+	courseSelect = $("<select class='centered' id='courseSelect'></select>");
+	for (i in courses) {
+		courseSelect.append("<option value='" + i + "'>" + courses[i]['name'] + "</option>");
+	}
+	courseSelect.change(function() {
+		rebuildSectionSelect($(this).val());
+	})
+	$("#add").append(courseSelect);
+	
+	$("#add").append("<h2>and file it under</h2>");
+	sectionSelect = $("<select class='centered' id='sectionSelect'></select>");
+	$("#add").append(sectionSelect);
+	
+	$("#courseSelect option[selected]").removeAttr("selected");
+	$("#courseSelect option[value='" + courseID + "']").attr("selected", "selected");
+	
+	rebuildSectionSelect(courseID, sectionID);
+	
+	$("#add").append("<h2>with the name</h2>");
+	$("#add").append("<input id='addName'></input>");
+	
+	cancel = $("<div id='addCancel' class='button'>Cancel</div>");
+	cancel.click(showMain);
+	$("#add").append(cancel);
+	submit = $("<div id='addSubmit' class='button'>Add Page</div>");
+	submit.click(function() {
+		selectedCourse = $("#courseSelect").val();
+		selectedSection = $("#sectionSelect").val();
+		selectedName = $("#addName").val();
+		console.log('asdfasdf');
+		
+		if (selectedName != "") {
+			
+			if (selectedSection < 0) {
+				chrome.tabs.getSelected(null, function(tab) {
+					newContent = {"name": selectedName, "url": tab.url};
+					courses[selectedCourse]['sections'].push(newContent);
+					showCourse(selectedCourse);
+				});
+			} else {
+				chrome.tabs.getSelected(null, function(tab) {
+					console.log(tab);
+					newContent = {"name": selectedName, "url": tab.url};
+					courses[selectedCourse]['sections'][selectedSection]['subsections'].push(newContent);
+					showSection(selectedCourse, selectedSection);
+				});
+			}
+		}
+	})
+	$("#add").append(submit);
+	
+	$(".wrapper").hide();
+	$("#add").show();
+}
+
+function rebuildSectionSelect(courseID, sectionID) {
+	sectionSelect = $("#sectionSelect");
+	sectionSelect.empty();
+	console.log(courseID)
+	
+	sectionSelect.append("<option value='-1'>-- Just put it directly inside " + courses[courseID]['shortname'] + " --</option>");
+	
+	for (i = 1; i < courses[courseID]['sections'].length; i++) {
+		console.log(sectionSelect);
+		console.log(courses[courseID]['sections'][i]['name']);
+		sectionSelect.append("<option value='" + i + "'>" + courses[courseID]['sections'][i]['name'] + "</option>");
+	}
+	
+	$("#sectionSelect option[selected]").removeAttr("selected");
+	$("#sectionSelect option[value='" + sectionID + "']").attr("selected", "selected");
+}

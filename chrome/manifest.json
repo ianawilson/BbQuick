@@ -8,6 +8,7 @@
   },
   "permissions": [
     "http://*/*",
+    "tabs",
     "*://my.rochester.edu/*",
     "http://localhost:8000/*",
     "https://ajax.googleapis.com/*"
