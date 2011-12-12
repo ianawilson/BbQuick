@@ -105,13 +105,26 @@ def getCourseSections(request):
         body = request.POST['html']
         soup = BeautifulSoup(body)
         ul = soup.find(attrs={'id': 'courseMenuPalette_contents'})
-        lis = ul.findAll('li')[:-3] # remove final dividers and Course Tools
+        lis = ul.findAll('li')
         for li in lis:
-            print li
             section = {}
             anchor = li.next.next
             section['name'] = anchor.next.contents[0]
             section['url'] = anchor['href']
+            skip = False
+            for attr in li.attrs:
+                # remove dividers
+                if attr[0] == 'class' and 'divider' in attr[1]:
+                    skip = True
+                # remove Course Tools
+                if li.text == 'Course Tools':
+                    skip = True
+            
+            if not skip:
+                section = {}
+                anchor = li.next.next
+                section['name'] = anchor.next.contents[0]
+                section['url'] = anchor['href']
             
             # skip announcements for everything, they were added manually at the beginning
             if not section['name'] == 'Announcements':
