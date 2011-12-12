@@ -6,6 +6,7 @@ var buttonHtml = "<div class='button'></div>";
 var announceHtml = "<div class='announcement'></div>";
 var addPageHtml = '<div class="small button" title="Add the current page as a resource for this course.">+ add page</div>';
 var breadcrumbHtml = '<div id="breadcrumbs"><a>home</a> &raquo; </div>';
+var showAllHtml = '<span class="showAllToggle">SHOW ALL</span>';
 
 var courses;
 var bbURL;
@@ -61,6 +62,7 @@ function buildLogin() {
 	$("#login").append(loginDiv);
 	
 	// $("#login").append(loginForm);
+	
 	runHandlers();
 }
 
@@ -75,6 +77,7 @@ function buildMain() {
 		showAddPage();
 	});
 	$("#main").prepend(addJq);
+	$("#courseDiv").append(showAllHtml);
 	
 	// add the course buttons
 	for (i in courses) {
@@ -93,6 +96,7 @@ function buildMain() {
 	// this also throws exceptions which we catch above if all of the subsections haven't been loaded yet
 	makeAnnouncements("#mainAnnouncements", announcements);
 	
+
 	runHandlers(false);
 }
 
@@ -111,12 +115,53 @@ function runHandlers(visibleOnly) {
 		$(this).removeClass("mouseover");
 	});
 	
+	var hideToggle = "<span class='hideToggle'><img src='uparrow.png' /> HIDE</span>";
+	
+	$(wrapperSelector + " .button").not(".small").after(hideToggle);
+	
+	$(".hideToggle").click(function() {
+		$(this).prev().slideUp();
+		$(this).slideUp();
+
+		//modifies button color and hide label for when shown to unhide
+		//set timeout used so it doesn't change until hidden
+		var t = setTimeout(hideTimeout, 500, $(this));
+	});
+	
+	$(".showAllToggle").click(function() {
+		$(".button").slideDown();
+		$(".button").next().slideDown();
+	});
+	
+	var buttons = $(".button").not(".small");
+	for (i = 0; i<buttons.length; i++) {
+
+		if (courses[$(buttons[i]).attr('target')]["hidden"]) {
+			$(buttons[i]).hide();
+			$(buttons[i]).next().hide();
+			hideTimeout($(buttons[i]).next());
+		}
+	}	
+	
 	// convert anchors to tab creators
 	
 	$(wrapperSelector).find('a').not('.internal').not('#breadcrumbs a').click(function() {
 		console.log('asdf');
 		chrome.tabs.create({'url': $(this).attr('href')});
 		window.close();
+	});
+}
+
+function hideTimeout(element) {
+	$(element).prev().css("background-color", "#247CC9");
+	$(element).html("<img src='downarrow.png' /> SHOW");
+	courses[$(element).prev().attr('target')]["hidden"] = true;
+	
+	$(element).unbind("click");
+	$(element).click(function() {
+		$(element).prev().css("background-color", "#0088FF");
+		$(element).html("<img src='uparrow.png' /> HIDE");
+		courses[$(element).prev().attr('target')]["hidden"] = false;
 	});
 }
 
@@ -161,6 +206,8 @@ function showCourse(courseID) {
 	
 	// add title
 	$("#course").append("<h1>" + course['name'] + "</h1>");
+	
+	$("#course").append(showAllHtml);
 	
 	// build sections
 	sections = course['sections'];
@@ -216,15 +263,23 @@ function showSection(courseID, sectionID) {
 	
 	$("#section").append("<h1>" + section['name'] + "</h1>");
 	
+	$("#section").append(showAllHtml);
+	
 	// add subsections
 	subsections = section['subsections'];
 	for (i in subsections) {
 		button = $(buttonHtml).append(subsections[i]['name']);
-		button.attr('target', bbURL + subsections[i]['url']);
-		button.click(function() {
-			chrome.tabs.create({'url': $(this).attr('target')});
-			window.close();
-		});
+		if (subsections[i]['url']) {
+			if (subsections[i]['url'][0] == "/") {
+				button.attr('target', bbURL + subsections[i]['url']);
+			} else {
+				button.attr('target', subsections[i]['url']);
+			}
+			button.click(function() {
+				chrome.tabs.create({'url': $(this).attr('target')});
+				window.close();
+			});
+		}
 		$("#section").append(button);
 	}
 	
