@@ -17,6 +17,7 @@ To Do
 - Delete old course entries that do no exist any more
 - should we get rid of the semester on each course? eg 2011Fall
 - Deal with courses that don't use announcements / don't put announcements as the home page for the course
+- show / hide for sections and subsections
 
 Scraping Process
 ----------------
