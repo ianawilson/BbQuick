@@ -10,7 +10,7 @@ var courses = new Array(0);
 var newCourses = new Array(0);
 var loginForm = null;
 
-$(document).ready(init);
+// $(document).ready(init);
 
 function init() {
 	getContentURL(function(data) {
@@ -89,6 +89,8 @@ function start(data) {
 	getCourses();
 }
 
+/*
+
 function getContentURL(success) {
 	$.get(bbURL + '/', function(data) {
 		$.post(engineURL + '/getContentURL/', {'html': data}, success);
@@ -166,6 +168,8 @@ function getCourseSubsections(section) {
 		});
 	});
 }
+
+*/
 
 /**
  * Quick Functions for getting data
