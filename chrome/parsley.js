@@ -63,7 +63,7 @@ function getCourses() {
 			var header = html.find(".moduleTitle:contains(Courses Online)");
 			var container = header.parent().parent();
 			var trs = container.find('tr');
-			var newCourses = new Array(0);
+			newCourses = new Array(0);
 			
 			for (var i = 0; i < trs.length; i++) {
 				var anchor = $(trs[i]).find('a');
@@ -82,15 +82,16 @@ function getCourses() {
 						rawSemester = rawList[1];
 					}
 					
+					href = anchor.attr('href');
+					
+					
 					course['name'] = $.trim(rawName).toLowerCase().toTitleCase();
 					course['semester'] = $.trim(rawSemester);
-					course['url'] = anchor.attr('href');
+					// the url is actually an argument in the url, we index 1 because that's the part in the paren
+					course['url'] = href.match(/&url=(.+)/)[1];
 					newCourses.push(course);
 				}
 			}
-			
-			console.log(newCourses);
-			
 			
 			if (newCourses.length > 0) {
 				for (i in newCourses) {
@@ -104,10 +105,42 @@ function getCourses() {
 	}
 }
 
-function getCourseSections() {
-	
+function getCourseSections(course) {
+	$.get(bbURL + course['url'], function(data) {
+		var html = $(data);
+		sections = new Array(0);
+		
+		// deal with announcements first
+		section = {}
+		section['name'] = 'Announcements';
+        section['url'] = course['url'];
+        sections.push(section);
+		
+		ul = html.find("#courseMenuPalette_contents");
+		// get all li's that aren't class divider
+		lis = ul.find("li:not(.divider)");
+		
+		for (var i = 0; i < lis.length; i++) {
+			anchor = $(lis[i]).find('a');
+			
+			section = {};
+			section['name'] = $.trim(anchor.text());
+			section['url'] = anchor.attr("href");
+			
+			// only push it onto the array if it's not Announcements
+			if (section['name'] != 'Announcements') {
+				sections.push(section);
+			}
+		}
+		
+		course['sections'] = sections;
+		for (i in course['sections']) {
+			section = course['sections'][i];
+			getCourseSubsections(section);
+		}
+	});
 }
 
-function getCourseSubsections() {
+function getCourseSubsections(section) {
 	
 }
