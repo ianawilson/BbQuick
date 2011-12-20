@@ -9,18 +9,38 @@ interface.
 *You'll be licking your fingers by the time you're done.*
 
 
-To Do
------
+Immediate To Do
+---------------
 
-- Being able to make custom sections
-- Being able to permanently remove added content
-- Delete old course entries that do no exist any more
-- should we get rid of the semester on each course? eg 2011Fall
-- Deal with courses that don't use announcements / don't put announcements as the home page for the course
+- Finish port of parsing to JavaScript & jQuery
 - show / hide for sections and subsections
+- Store information locally to persist across sessions
+    - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
+- Permissions in our manifest are currently wide open !! lock that down.
+
+
+Long Term To Do
+---------------
+
+- Reorganize all of the files; they're a mess!
+- User should be able to make custom sections
+- User should be able to permanently remove self-added content
+- Need a way to figure out if a person is logged in or not (don't try to scrape if they aren't!)
+- Need a way to deal with a *different* person being logged in. Can we tell they are different? Is there a UID?
+- Delete old course entries that do no exist any more
+- Deal with courses that don't use announcements or that put something else as the home page for the course
+
+
+
+Wishlist
+--------
+
+- doesn't work for TAs (and probably teachers)
+- suppress or eliminate all of the GET errors from bringing all of the Bb code into jQuery. blech
+
 
 Scraping Process
-----------------
+================
 
 - Do a GET for "my.rochester.edu"
 - Process: find the "content" frame, find the URL for that
@@ -31,30 +51,9 @@ Scraping Process
     - loop on resources, GET for each
         - Process: find sub-resources / buttons for each resource, collect content or URLs
 
-views:
-
-- getContentURL
-- isAuthenticated
-- getCourses
-- getCourseSections
-- getCourseSubsections
-
-additional written but unused views:
-
-- getNavURL (part of failed attempt to get things from Course page)
-- getCoursesURL (ditto)
-
-
-Notes and Ideas
----------------
-
-- localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
-- CSRF in Django is turned off since this simply parses html
-- permissions in our manifest are currently wide open !!
-- doesn't work for TAs (and probably teachers)
 
 Structure for Course Information Data Structure
------------------------------------------------
+===============================================
 
 - dictionary localStorage or JSON
     - key 'courses': array of courses, each being a dict
@@ -69,25 +68,11 @@ Structure for Course Information Data Structure
                 - key 'url'
 
 
-Wishlist
---------
+Notes
+=====
 
-- Need a way to figure out if a person is logged in or not (don't try to scrape if they aren't!)
-    - check 
-- proper try/except blocks for BeautifulSoup so that we don't get totally useless 500 errors
-    - return json with 'error' key, find a way to deal with this / display in extension
+We're using Gouch's JS implementation of to-title-case (https://github.com/gouch/to-title-case).
 
-
-Requirements
-------------
-
-- Python 2.7
-- Beautiful Soup 3.2.0
-
-
-Note
-----
-
-This project is being developed for Jeff Bigham's *Human Computer Interaction*
-class (CSC212) at the University of Rochester.
+This project started develeopment for Jeff Bigham's *Human Computer Interaction*
+class (CSC212) at the University of Rochester in the Fall of 2011.
 
