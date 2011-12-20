@@ -1,8 +1,85 @@
-/* Helpers and Initialization */
+// this should not end with a slash !
+var bbURL = 'http://my.rochester.edu';
 
-function parsley() {
-	
+// temporary storage for what we've already got
+var contentURL = null;
+var coursesURL = null;
+var authenticated = false;
+var courses = new Array(0);
+var newCourses = new Array(0);
+var loginForm = null;
+
+
+
+/**
+ * Helpers and Initialization
+ **/
+
+$(document).ready(init);
+
+function init() {
+	isAuthenticated();
+	getCourses();
+	// refresh in 30 seconds
+	setTimeout(init, 30*1000);
+	// update courses 10 seconds from now, after they're probably gotten
+	setTimeout(updateCourses, 10*1000);
 }
+
+function updateCourses() {
+	console.log('Starting to update courses.');
+	// go through newCourses
+	for (newIndex in newCourses) {
+		oldIndex = findSubMember(courses, 'shortname', newCourses[newIndex]['shortname']);
+		if (oldIndex >= 0) {
+			console.log("Updating course " + newCourses[newIndex]['shortname']);
+			// exists, update it
+			courses[oldIndex]['name'] = newCourses[newIndex]['name'];
+
+			// run through sections
+			newSections = newCourses[newIndex]['sections'];
+
+			for (newSectionIndex in newSections) {
+				oldSectionIndex = findSubMember(courses[oldIndex]['sections'], 'name', newSections[newSectionIndex]['name']);
+				if (oldSectionIndex >= 0) {
+					console.log("  Updating section " + newSections[newSectionIndex]['name']);
+					courses[oldIndex]['sections'][oldSectionIndex]['url'] = newSections[newSectionIndex]['url'];
+
+					// run through subsections
+					newSubsections = newSections[newSectionIndex]['subsections'];
+
+					for (newSubsectionIndex in newSubsections) {
+						oldSubsectionIndex = findSubMember(courses[oldIndex]['sections'][oldSectionIndex]['subsections'], 'details', newSubsections[newSubsectionIndex]['details']);
+
+						if (oldSubsectionIndex >= 0) {
+							console.log("    Updating subsection " + newSubsections[newSubsectionIndex]['name']);
+							courses[oldIndex]['sections'][oldSectionIndex]['subsections'][oldSubsectionIndex]['author'] = newSubsections[newSubsectionIndex]['author'];
+							courses[oldIndex]['sections'][oldSectionIndex]['subsections'][oldSubsectionIndex]['date'] = newSubsections[newSubsectionIndex]['date'];
+							courses[oldIndex]['sections'][oldSectionIndex]['subsections'][oldSubsectionIndex]['name'] = newSubsections[newSubsectionIndex]['name'];
+						}
+					}
+				} else {
+					// section doesn't exist, grab it, then splice to insert it
+					courses[oldIndex]['sections'].splice(newIndex, 0, newSections[newSectionIndex]);
+				}
+			}
+		} else {
+			// course doesn't exist, grab it, then use splice to insert it
+			courses.splice(newIndex, 0, newCourses[newIndex]);
+		}
+	}
+	console.log("Done updating courses.");
+}
+function findSubMember(arr, member, value) {
+	for (i in arr) {
+		if (arr[i][member] == value) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+
 
 function getContentURL(callback) {
 	$.get(bbURL + '/', function(data) {
@@ -53,7 +130,11 @@ function isAuthenticated() {
 	});
 }
 
-/* Major Functions */
+
+
+/**
+ * Major Functions
+ **/
 
 function getCourses() {
 	if (authenticated) { 
@@ -84,6 +165,12 @@ function getCourses() {
 					
 					href = anchor.attr('href');
 					
+					// shortname
+					id = anchor.parent().next();
+					match = id.text().match(/(\w+)./);
+					// sub 1 because we want what's in the parens
+					shortname = match[1];
+					course['shortname'] = shortname;
 					
 					course['name'] = $.trim(rawName).toLowerCase().toTitleCase();
 					course['semester'] = $.trim(rawSemester);
@@ -127,8 +214,8 @@ function getCourseSections(course) {
 			section['name'] = $.trim(anchor.text());
 			section['url'] = anchor.attr("href");
 			
-			// only push it onto the array if it's not Announcements
-			if (section['name'] != 'Announcements') {
+			// only push non Announcements and non Course Tools items
+			if (section['name'] != 'Announcements' && section['name'] != 'Course Tools') {
 				sections.push(section);
 			}
 		}
@@ -142,5 +229,105 @@ function getCourseSections(course) {
 }
 
 function getCourseSubsections(section) {
+	$.get(bbURL + section['url'], function(data) {
+		html = $(data);
+		
+		subsections = new Array(0);
+		
+		// most pages use an id pageList, only announcements use announcementList
+		pageList = html.find("#pageList");
+		announcementList = html.find("#announcementList");
+		
+		if (pageList.length > 0) {
+			lis = $(pageList).find('li.clearfix.read');
+			for (var i = 0; i < lis.length; i++) {
+				anchor = $(lis[i]).find('a');
+				heading = $(lis[i]).find('h3');
+				if (anchor.length > 0) {
+					subsection = {};
+					subsection['name'] = $.trim($(heading[0]).text());
+					subsection['url'] = $(anchor[0]).attr('href');
+					
+					subsections.push(subsection);
+				}
+			}
+		} else if (announcementList.length > 0) {
+			lis = $(announcementList).find('li.clearfix');
+			
+			for (var i = 0; i < lis.length; i++ ) {
+				subsection = {};
+				
+				heading = $(lis[i]).find('h3');
+				heading = $.trim(heading.text());
+				subsection['name'] = heading;
+				
+				details = $.trim($(lis[i]).find('div.details').html());
+				subsection['details'] = details;
+				
+				info = $(lis[i]).find('div.announcementInfo');
+				spans = info.find('span');
+				subsection['author'] = $.trim(spans[0].nextSibling.data).toTitleCase();
+				subsection['date'] = $.trim(spans[1].nextSibling.data);
+				
+				subsections.push(subsection);
+			}
+		} else {
+			// nothing to see here
+		}
+		
+		section['subsections'] = subsections;
+	});
+}
+
+
+
+/**
+ * Quick Functions for getting data
+ **/
+
+// get recent announcements
+function getRecentAnnouncements(limit) {
+	if (limit == null) {
+		limit = 10;
+	}
 	
+	announcements = []
+	for (course in courses) {
+		// announcements are always the first section, and they are guaranteed to exist by parsley
+		theseAnnce = newCourses[course]['sections'][0]['subsections']
+		announcements = announcements.concat(theseAnnce)
+	}
+	// ======= REMOVE BAD ELEMENTS FROM HERE ========
+	for (i in announcements) {
+		if (announcements[i]['author'] == null) {
+			announcements.splice(i, 1);
+		}
+	}
+	
+	announcements.sort(function(a, b) {
+		console.log('===')
+		console.log(a)
+		console.log(b)
+		// b - a so that they are sorted with the most recent (highest) first
+		if (b == null) {
+			return a;
+		}
+		return announceSorted(b) - announceSorted(a);
+	});
+	
+	// cut off everything after limit
+	announcements.splice(limit)
+	
+	return announcements
+}
+function announceSorted(item) {
+	ms = 0;
+	console.log(item)
+	if (item['date'] == null) {
+		return 0;
+	}
+	if (item['date'].length > 0) {
+		ms = Date.parse(item['date']);
+	}
+	return ms;
 }
