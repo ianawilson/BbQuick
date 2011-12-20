@@ -266,7 +266,7 @@ function getCourseSubsections(section) {
 				
 				info = $(lis[i]).find('div.announcementInfo');
 				spans = info.find('span');
-				subsection['author'] = $.trim(spans[0].nextSibling.data).toTitleCase();
+				subsection['author'] = $.trim(spans[0].nextSibling.data).toLowerCase().toTitleCase();
 				subsection['date'] = $.trim(spans[1].nextSibling.data);
 				
 				subsections.push(subsection);
@@ -305,9 +305,6 @@ function getRecentAnnouncements(limit) {
 	}
 	
 	announcements.sort(function(a, b) {
-		console.log('===')
-		console.log(a)
-		console.log(b)
 		// b - a so that they are sorted with the most recent (highest) first
 		if (b == null) {
 			return a;
