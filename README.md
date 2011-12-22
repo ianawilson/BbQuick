@@ -16,7 +16,7 @@ Immediate To Do
 - Store information locally to persist across sessions
     - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
 - find a way to show updating / scraping progress, or at least to know when it's done, rather than guessing with timeouts
-    - In general, clean up the init function and how everything is triggered.
+    - In general, clean up the parsley init function and how everything is triggered.
     - Make it more on-demand, or at least faster
 
 
