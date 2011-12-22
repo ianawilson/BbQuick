@@ -9,6 +9,8 @@ var courses = new Array(0);
 var newCourses = new Array(0);
 var loginForm = null;
 
+// timeouts
+var initTimeout, updateCoursesTimeout;
 
 
 /**
@@ -18,12 +20,17 @@ var loginForm = null;
 $(document).ready(init);
 
 function init() {
+	// clear timeouts just in case this was called from the popup
+	clearTimeout(initTimeout);
+	clearTimeout(updateCoursesTimeout);
+	
 	isAuthenticated();
-	getCourses();
-	// refresh in 30 seconds
-	setTimeout(init, 30*1000);
-	// update courses 10 seconds from now, after they're probably gotten
-	setTimeout(updateCourses, 10*1000);
+	// wait 5 seconds to get courses, since we might need to re-evaluate login status
+	getCoursesTimeout = setTimeout(getCourses, 5*1000);
+	// refresh in 5 minutes
+	initTimeout = setTimeout(init, 5*60*1000);
+	// update courses 15 seconds from now, after they're probably gotten
+	updateCoursesTimeout = setTimeout(updateCourses, 10*1000);
 }
 
 function updateCourses() {
@@ -56,15 +63,21 @@ function updateCourses() {
 							courses[oldIndex]['sections'][oldSectionIndex]['subsections'][oldSubsectionIndex]['author'] = newSubsections[newSubsectionIndex]['author'];
 							courses[oldIndex]['sections'][oldSectionIndex]['subsections'][oldSubsectionIndex]['date'] = newSubsections[newSubsectionIndex]['date'];
 							courses[oldIndex]['sections'][oldSectionIndex]['subsections'][oldSubsectionIndex]['name'] = newSubsections[newSubsectionIndex]['name'];
+						} else {
+							// section doesn't exist, grab it, then splice to insert
+							console.log("    Inserting subsection " + newSubsections[newSubsectionIndex]['name']);
+							courses[oldIndex]['sections'][oldSectionIndex]['subsections'].splice(newSubsectionIndex, 0, newSubsections[newSubsectionIndex]);
 						}
 					}
 				} else {
 					// section doesn't exist, grab it, then splice to insert it
-					courses[oldIndex]['sections'].splice(newIndex, 0, newSections[newSectionIndex]);
+					console.log("  Inserting section " + newSections[newSectionIndex]['name']);
+					courses[oldIndex]['sections'].splice(newSectionIndex, 0, newSections[newSectionIndex]);
 				}
 			}
 		} else {
 			// course doesn't exist, grab it, then use splice to insert it
+			console.log("Inserting course " + newCourses[newIndex]['shortname']);
 			courses.splice(newIndex, 0, newCourses[newIndex]);
 		}
 	}
@@ -319,7 +332,7 @@ function getRecentAnnouncements(limit) {
 }
 function announceSorted(item) {
 	ms = 0;
-	console.log(item)
+	// console.log(item)
 	if (item['date'] == null) {
 		return 0;
 	}

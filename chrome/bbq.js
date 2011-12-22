@@ -35,12 +35,12 @@ function init() {
 			showWait();
 		}
 		
-	} else if (loginForm) {
-		buildLogin();
-		showLogin();
-	} else {
+	} else if (authenticated) {
 		buildWait();
 		showWait();
+	} else {
+		buildLogin();
+		showLogin();
 	}
 }
 
