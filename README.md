@@ -12,8 +12,8 @@ interface.
 Immediate To Do
 ---------------
 
-- Potentially change announcement sort to sort by ID (will properly place announcements without dates)
 - Document the work so far
+- Potentially change announcement sort to sort by ID (will properly place announcements without dates)
 - Store information locally to persist across sessions
     - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
 - find a way to show updating / scraping progress, or at least to know when it's done, rather than guessing with timeouts
@@ -38,10 +38,12 @@ Long Term To Do
 Wishlist
 --------
 
-- If you hit it at just the right time (during an updateCourses?) it says "Please wait", which is annoying and the whole point of updateCourses ...
+- If you hit it at just the right time (looks like during an updateCourses?) it says "Please wait", which is annoying and the whole point of updateCourses ...
 - doesn't work for TAs (and probably teachers)
 - suppress or eliminate all of the GET errors from bringing all of the Bb code into jQuery. blech
 - Bring in Assignment Due Dates
+- Make it generic: set your own Blackboard URL (bbURL), modify / extend the scraping to deal with different styles of Blackboard layout (if they are are different)
+    - Jeff suggested that to make it generic, maybe we could have user-selectable scraping filters (drag and select over whatever you want)
 
 
 Scraping Process
