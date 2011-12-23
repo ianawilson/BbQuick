@@ -56,7 +56,7 @@ function updateCourses() {
 					newSubsections = newSections[newSectionIndex]['subsections'];
 
 					for (newSubsectionIndex in newSubsections) {
-						oldSubsectionIndex = findSubMember(courses[oldIndex]['sections'][oldSectionIndex]['subsections'], 'details', newSubsections[newSubsectionIndex]['details']);
+						oldSubsectionIndex = findSubMember(courses[oldIndex]['sections'][oldSectionIndex]['subsections'], 'id', newSubsections[newSubsectionIndex]['id']);
 
 						if (oldSubsectionIndex >= 0) {
 							console.log("    Updating subsection " + newSubsections[newSubsectionIndex]['name']);
@@ -258,6 +258,7 @@ function getCourseSubsections(section) {
 				heading = $(lis[i]).find('h3');
 				if (anchor.length > 0) {
 					subsection = {};
+					subsection['id'] = heading.attr('id');
 					subsection['name'] = $.trim($(heading[0]).text());
 					subsection['url'] = $(anchor[0]).attr('href');
 					
@@ -269,15 +270,18 @@ function getCourseSubsections(section) {
 			
 			for (var i = 0; i < lis.length; i++ ) {
 				subsection = {};
+				li = $(lis[i]);
 				
-				heading = $(lis[i]).find('h3');
+				subsection['id'] = li.attr('id');
+				
+				heading = li.find('h3');
 				heading = $.trim(heading.text());
 				subsection['name'] = heading;
 				
-				details = $.trim($(lis[i]).find('div.details').html());
+				details = $.trim(li.find('div.details').html());
 				subsection['details'] = details;
 				
-				info = $(lis[i]).find('div.announcementInfo');
+				info = li.find('div.announcementInfo');
 				spans = info.find('span');
 				subsection['author'] = $.trim(spans[0].nextSibling.data).toLowerCase().toTitleCase();
 				subsection['date'] = $.trim(spans[1].nextSibling.data);

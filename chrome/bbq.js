@@ -105,7 +105,6 @@ function runHandlers() {
 	 * Convert anchors to tab creators
 	 **/
 	$(wrapperSelector).find('a').not('.internal').not('#breadcrumbs a').click(function() {
-		console.log('asdf');
 		chrome.tabs.create({'url': $(this).attr('href')});
 		window.close();
 	});
@@ -131,8 +130,8 @@ function exitEdit() {
 		button = $(buttons[i]);
 		buttonID = button.attr('id')
 		
-		console.log(activeCourse + ', ' + activeSection + ', ' + buttonID);
-		console.log(hidden);
+		// console.log(activeCourse + ', ' + activeSection + ', ' + buttonID);
+		// console.log(hidden);
 		if (getHidden(buttonID)) {
 			button.slideUp();
 			button.next().slideUp();
@@ -170,8 +169,9 @@ function setHidden(buttonID, hidden) {
 }
 
 function hideButton(buttonID) {
-	button = $("#" + buttonID);
-	toggle = button.next();
+	var button = $("#" + buttonID);
+	console.log(button);
+	var toggle = button.next();
 	
 	button.addClass("hiddenButton");
 	toggle.html("<img src='downarrow.png' /> <span class='internal'>show</span>");
@@ -179,6 +179,9 @@ function hideButton(buttonID) {
 	
 	toggle.unbind("click");
 	toggle.click(function() {
+		var toggle = $(this);
+		var button = toggle.prev();
+		
 		button.removeClass("hiddenButton");
 		toggle.html("<img src='uparrow.png' /> <span class='internal'>hide</span>");
 		
@@ -384,8 +387,8 @@ function showAddPage(courseID, sectionID) {
 	if (!sectionID) {
 		sectionID = -1;
 	}
-	console.log(courseID);
-	console.log(sectionID);
+	// console.log(courseID);
+	// console.log(sectionID);
 	
 	$("#add").append("<h2>Add the active tab as a resource for</h2>");
 	courseSelect = $("<select class='centered' id='courseSelect'></select>");
@@ -421,7 +424,6 @@ function showAddPage(courseID, sectionID) {
 		selectedCourse = $("#courseSelect").val();
 		selectedSection = $("#sectionSelect").val();
 		selectedName = $("#addName").val();
-		console.log('asdfasdf');
 		
 		if (selectedName != "") {
 			
@@ -433,7 +435,6 @@ function showAddPage(courseID, sectionID) {
 				});
 			} else {
 				chrome.tabs.getSelected(null, function(tab) {
-					console.log(tab);
 					newContent = {"name": selectedName, "url": tab.url};
 					courses[selectedCourse]['sections'][selectedSection]['subsections'].push(newContent);
 					showSection(selectedCourse, selectedSection);
@@ -450,13 +451,13 @@ function showAddPage(courseID, sectionID) {
 function rebuildSectionSelect(courseID, sectionID) {
 	sectionSelect = $("#sectionSelect");
 	sectionSelect.empty();
-	console.log(courseID)
+	// console.log(courseID)
 	
 	sectionSelect.append("<option value='-1'>-- Just put it directly inside " + courses[courseID]['shortname'] + " --</option>");
 	
 	for (i = 1; i < courses[courseID]['sections'].length; i++) {
-		console.log(sectionSelect);
-		console.log(courses[courseID]['sections'][i]['name']);
+		// console.log(sectionSelect);
+		// console.log(courses[courseID]['sections'][i]['name']);
 		sectionSelect.append("<option value='" + i + "'>" + courses[courseID]['sections'][i]['name'] + "</option>");
 	}
 	

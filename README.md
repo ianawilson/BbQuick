@@ -12,6 +12,7 @@ interface.
 Immediate To Do
 ---------------
 
+- Potentially change announcement sort to sort by ID (will properly place announcements without dates)
 - Document the work so far
 - Store information locally to persist across sessions
     - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
