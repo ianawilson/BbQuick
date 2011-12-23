@@ -12,7 +12,6 @@ interface.
 Immediate To Do
 ---------------
 
-- show / hide for sections and subsections is broken
 - Store information locally to persist across sessions
     - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
 - find a way to show updating / scraping progress, or at least to know when it's done, rather than guessing with timeouts

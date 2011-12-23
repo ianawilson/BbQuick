@@ -25,12 +25,12 @@ function init() {
 	clearTimeout(updateCoursesTimeout);
 	
 	isAuthenticated();
-	// wait 5 seconds to get courses, since we might need to re-evaluate login status
-	getCoursesTimeout = setTimeout(getCourses, 5*1000);
+	// wait 10 seconds to get courses, since we might need to re-evaluate login status
+	getCoursesTimeout = setTimeout(getCourses, 10*1000);
 	// refresh in 5 minutes
 	initTimeout = setTimeout(init, 5*60*1000);
-	// update courses 15 seconds from now, after they're probably gotten
-	updateCoursesTimeout = setTimeout(updateCourses, 10*1000);
+	// update courses 20 seconds from now, after they're probably gotten
+	updateCoursesTimeout = setTimeout(updateCourses, 20*1000);
 }
 
 function updateCourses() {

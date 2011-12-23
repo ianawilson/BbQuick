@@ -6,13 +6,17 @@ var buttonHtml = "<div class='button'></div>";
 var announceHtml = "<div class='announcement'></div>";
 var addPageHtml = '<div class="small button" title="Add the active tab as a resource for this course.">+ add active tab</div>';
 var breadcrumbHtml = '<div id="breadcrumbs"><a>home</a> &raquo; </div>';
-var showAllHtml = '<a class="showAllToggle internal" href="#">edit - show / hide</>';
+var editShowHideHtml = '<a class="editShowHide internal" href="#">edit - show / hide</>';
 
 var courses;
 var bbURL;
 var loginForm;
 var authenticated;
 var bg;
+
+// active variables for show / hide
+var activeCourse = -1;
+var activeSection = -1;
 
 function init() {
 	// get the background page
@@ -24,17 +28,8 @@ function init() {
 	loginForm = bg.loginForm;
 	authenticated = bg.authenticated;
 	
-	if (authenticated && courses) {
-		// this try catch block stops us from showing the popup before all of the data is loaded
-		try {
-			buildMain();
-			showMain();
-		} catch(err) {
-			console.log(err.stack);
-			buildWait();
-			showWait();
-		}
-		
+	if (authenticated && courses.length > 0) {
+		showMain();
 	} else if (authenticated) {
 		buildWait();
 		showWait();
@@ -50,7 +45,6 @@ function buildWait() {
 }
 
 function buildLogin() {
-	loginDiv = $("<div></div>");
 	login = $("<p></p><h2>BbQuick Needs You to Login</h2><p class='centered'>Please login on <a href='" + bbURL + "'>Blackboard</a>.</p>");
 	refresh = $("<a href='#' class='internal'>Refresh BbQuick manually.</a>").click(function() {
 		bg.init();
@@ -60,55 +54,16 @@ function buildLogin() {
 	
 	loginDiv.append(login);
 	loginDiv.append(refreshPara);
-	$("#login").append(loginDiv);
-	
-	// $("#login").append(loginForm);
 	
 	runHandlers();
 }
 
-function buildMain() {
-	// throw an error to jump out of this if courses aren't loaded yet
-	if (!courses.length > 0) {
-		throw "Courses not loaded yet.";
-	}
+function runHandlers() {
 	
-	addJq = $(addPageHtml);
-	addJq.click(function() {
-		showAddPage();
-	});
-	$("#main").prepend(addJq);
-	$("#courseDiv").append(showAllHtml);
+	/**
+	 * Highlighting effect to the course buttons
+	 **/
 	
-	// add the course buttons
-	for (i in courses) {
-		var div = $(buttonHtml).html(courses[i]["name"]);
-		div.attr('target', i);
-		div.click(function() {
-			showCourse($(this).attr('target'));
-		});
-	
-		$("#courseDiv").append(div);
-	}
-	
-	//get announcements
-	var announcements = chrome.extension.getBackgroundPage().getRecentAnnouncements();
-	
-	// this also throws exceptions which we catch above if all of the subsections haven't been loaded yet
-	makeAnnouncements("#mainAnnouncements", announcements);
-	
-
-	runHandlers(false);
-}
-
-function runHandlers(visibleOnly) {
-	if (visibleOnly == null || visibleOnly) {
-		wrapperSelector = ".wrapper:visible";
-	} else {
-		wrapperSelector = ".wrapper";
-	}
-	
-	// add highlighting effect to the course buttons
 	$(".button").mouseover(function() {
 		$(this).addClass("mouseover");
 	});
@@ -116,29 +71,37 @@ function runHandlers(visibleOnly) {
 		$(this).removeClass("mouseover");
 	});
 	
-	var hideToggle = "<span class='hideToggle'><img src='uparrow.png' /> <span class='internal'>hide</span></span>";
 	
-	$(wrapperSelector + " .button").not(".small").after(hideToggle);
+	/**
+	 * Place hide / show buttons
+	 **/
+	
+	var hideToggleHtml = "<div class='hideToggle'><img src='uparrow.png' /> <span class='internal'>hide</span></div>";
+	
+	wrapperSelector = ".wrapper:visible";
+	$(".button").not(".small").after(hideToggleHtml);
 	$(".hideToggle").hide();
 	
 	$(".hideToggle").click(function() {
 		var t = setTimeout(hideTimeout, 500, $(this));
 	});
 	
-	$(".showAllToggle").click(enterEdit);
+	$(".editShowHide").click(enterEdit);
 	
 	var buttons = $(".button").not(".small");
 	for (i = 0; i<buttons.length; i++) {
-
-		if (courses[$(buttons[i]).attr('target')]["hidden"]) {
-			$(buttons[i]).hide();
-			$(buttons[i]).next().hide();
-			hideTimeout($(buttons[i]).next());
+		button = $(buttons[i]);
+		buttonID = button.attr('id');
+		if (getHidden(buttonID)) {
+			button.hide();
+			button.next().hide();
+			hideTimeout(button.next());
 		}
 	}	
 	
-	// convert anchors to tab creators
-	
+	/**
+	 * Convert anchors to tab creators
+	 **/
 	$(wrapperSelector).find('a').not('.internal').not('#breadcrumbs a').click(function() {
 		console.log('asdf');
 		chrome.tabs.create({'url': $(this).attr('href')});
@@ -147,36 +110,66 @@ function runHandlers(visibleOnly) {
 }
 
 function enterEdit() {
-	$(".showAllToggle").html("save");
-	$(".showAllToggle").unbind("click", enterEdit);
-	$(".showAllToggle").click(exitEdit);
+	$(".editShowHide").html("collapse - show / hide");
+	$(".editShowHide").unbind("click", enterEdit);
+	$(".editShowHide").click(exitEdit);
 	
-	$(".button").slideDown();
-	$(".button").next().slideDown();
+	buttons = $(".button").not("small");
+	buttons.slideDown();
+	buttons.next().slideDown();
 }
 
 function exitEdit() {
-	$(".showAllToggle").html("edit - show / hide");
-	$(".showAllToggle").unbind("click", exitEdit);
-	$(".showAllToggle").click(enterEdit);
+	$(".editShowHide").html("edit - show / hide");
+	$(".editShowHide").unbind("click", exitEdit);
+	$(".editShowHide").click(enterEdit);
 	
 	var buttons = $(".button").not(".small");
 	for (i = 0; i<buttons.length; i++) {
-		if (courses[$(buttons[i]).attr('target')]["hidden"]) {
-			$(buttons[i]).hide();
-			$(buttons[i]).next().hide();
-			hideTimeout($(buttons[i]).next());
+		button = $(buttons[i]);
+		buttonID = button.attr('id')
+		
+		console.log(activeCourse + ', ' + activeSection + ', ' + buttonID);
+		console.log(hidden);
+		if (getHidden(buttonID)) {
+			button.slideUp();
+			button.next().slideUp();
+			hideTimeout(button.next());
 		}
 	}
 	
 	$(".button").not(".small").next().slideUp();
+}
 
+function getHidden(buttonID) {
+	if (activeCourse >= 0) {
+		if (activeSection >= 0) {
+			hidden = courses[activeCourse]['sections'][activeSection]['subsections'][buttonID]['hidden'];
+		} else {
+			hidden = courses[activeCourse]['sections'][buttonID]['hidden'];
+		}
+	} else {
+		hidden = courses[buttonID]['hidden'];
+	}
+	
+	return hidden;
+}
+function setHidden(buttonID, hidden) {
+	if (activeCourse >= 0) {
+		if (activeSection >= 0) {
+			courses[activeCourse]['sections'][activeSection]['subsections'][buttonID]['hidden'] = hidden;
+		} else {
+			courses[activeCourse]['sections'][buttonID]['hidden'] = hidden;
+		}
+	} else {
+		courses[buttonID]['hidden'] = hidden;
+	}
 }
 
 function hideTimeout(element) {
 	$(element).prev().addClass("hiddenButton");
 	$(element).html("<img src='downarrow.png' /> <span class='internal'>show</span>");
-	courses[$(element).prev().attr('target')]["hidden"] = true;
+	setHidden($(element).prev().attr('id'), true);
 	
 	$(element).unbind("click");
 	$(element).click(function() {
@@ -190,7 +183,7 @@ function hideTimeout(element) {
 			$(this).removeClass("mouseover");
 		});
 		
-		courses[$(element).prev().attr('target')]["hidden"] = false;
+		setHidden($(element).prev().attr('id'), false);
 		$(element).unbind("click");
 		$(element).click(function() {
 			var t = setTimeout(hideTimeout, 500, $(this));
@@ -214,13 +207,51 @@ function showLogin() {
 
 function showMain() {
 	$(".wrapper").hide();
+	clearAll();
+	activeCourse = -1;
+	activeSection = -1;
+	
+	addJq = $(addPageHtml);
+	addJq.click(function() {
+		showAddPage();
+	});
+	$("#main").append(addJq);
+	
+	$("#main").append($("<div id='header'><h1> BbQuick Courses </h1></div>"));
+	
+	coursesDiv = $("<div id='courses'></div>");
+	coursesDiv.append(editShowHideHtml);
+	
+	// add the course buttons
+	for (i in courses) {
+		var div = $(buttonHtml).html(courses[i]["name"]);
+		div.attr('id', i);
+		div.click(function() {
+			showCourse($(this).attr('id'));
+		});
+	
+		coursesDiv.append(div);
+	}
+	
+	// finally, add the courses div to the main
+	$("#main").append(coursesDiv);
+	
+	//get announcements
+	var announcements = chrome.extension.getBackgroundPage().getRecentAnnouncements();
+	$("#course").append("<h2>Announcements</h2>");
+	makeAnnouncements("#main", announcements);
+	
 	$("#main").show();
+	
+	runHandlers();
 }
 
 function showCourse(courseID) {
 	// hide last thing, ready this by clearing it
 	$(".wrapper").hide();
-	$("#course").empty();
+	clearAll();
+	activeCourse = courseID;
+	activeSection = -1;
 	course = courses[courseID];
 	
 	// add the add page button
@@ -240,26 +271,25 @@ function showCourse(courseID) {
 	// add title
 	$("#course").append("<h1>" + course['name'] + "</h1>");
 	
-	$("#course").append(showAllHtml);
+	$("#course").append(editShowHideHtml);
 	
 	// build sections
 	sections = course['sections'];
 	// start at 1 because the first element is always announcements, which we don't want a button for
 	for (i = 1; i < sections.length; i++) {
 		button = $(buttonHtml).html(sections[i]['name']);
+		button.attr('id', i);
 		if (sections[i]['subsections'] == null || sections[i]['subsections'].length == 0) {
-			button.attr('target', sections[i]['url']);
 			button.click(function() {
-				url = $(this).attr('target');
+				url = sections[$(this).attr('id')]['url'];
 				if (url[0] == '/') {
 					url = bbURL + url;
 				}
 				chrome.tabs.create({'url': url});
 			});
 		} else {
-			button.attr('target', i);
 			button.click(function() {
-				showSection(courseID, $(this).attr('target'));
+				showSection(courseID, $(this).attr('id'));
 			});
 		}
 		$("#course").append(button)
@@ -279,7 +309,9 @@ function showCourse(courseID) {
 function showSection(courseID, sectionID) {
 	// hide last thing, ready this by clearing it
 	$(".wrapper").hide();
-	$("#section").empty();
+	clearAll();
+	activeCourse = courseID;
+	activeSection = sectionID;
 	course = courses[courseID];
 	section = course['sections'][sectionID];
 	
@@ -305,29 +337,34 @@ function showSection(courseID, sectionID) {
 	
 	$("#section").append("<h1>" + section['name'] + "</h1>");
 	
-	$("#section").append(showAllHtml);
+	$("#section").append(editShowHideHtml);
 	
 	// add subsections
 	subsections = section['subsections'];
 	for (i in subsections) {
 		button = $(buttonHtml).append(subsections[i]['name']);
-		if (subsections[i]['url']) {
-			if (subsections[i]['url'][0] == "/") {
-				button.attr('target', bbURL + subsections[i]['url']);
-			} else {
-				button.attr('target', subsections[i]['url']);
+		button.attr('id', i);
+		button.click(function() {
+			url = subsections[$(this).attr('id')]['url'];
+			if (url[0] == "/") {
+				url = bbURL + url;
 			}
-			button.click(function() {
-				chrome.tabs.create({'url': $(this).attr('target')});
-				window.close();
-			});
-		}
+			chrome.tabs.create({'url': url});
+			window.close();
+		});
 		$("#section").append(button);
 	}
 	
 	$("#section").show();
 	
 	runHandlers();
+}
+
+function clearAll() {
+	// clear everything so that we don't have any conflicting button ids
+	$("#main").empty();
+	$("#course").empty();
+	$("#section").empty();
 }
 
 function makeAnnouncements(divSelector, announcements) {
