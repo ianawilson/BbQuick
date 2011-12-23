@@ -12,6 +12,7 @@ interface.
 Immediate To Do
 ---------------
 
+- Document the work so far
 - Store information locally to persist across sessions
     - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
 - find a way to show updating / scraping progress, or at least to know when it's done, rather than guessing with timeouts
@@ -71,8 +72,8 @@ Structure for Course Information Data Structure
                 - key 'url'
 
 
-Notes
-=====
+Notes and Credits
+=================
 
 We're using Gouch's JS implementation of to-title-case (https://github.com/gouch/to-title-case).
 

@@ -83,7 +83,8 @@ function runHandlers() {
 	$(".hideToggle").hide();
 	
 	$(".hideToggle").click(function() {
-		var t = setTimeout(hideTimeout, 500, $(this));
+		// var t = setTimeout(hideButton, 500, $(this));
+		hideButton($(this).prev().attr('id'));
 	});
 	
 	$(".editShowHide").click(enterEdit);
@@ -95,7 +96,8 @@ function runHandlers() {
 		if (getHidden(buttonID)) {
 			button.hide();
 			button.next().hide();
-			hideTimeout(button.next());
+			// hideButton(button.next());
+			hideButton(button.attr('id'));
 		}
 	}	
 	
@@ -134,7 +136,8 @@ function exitEdit() {
 		if (getHidden(buttonID)) {
 			button.slideUp();
 			button.next().slideUp();
-			hideTimeout(button.next());
+			// hideButton(button.next());
+			hideButton(button.attr('id'));
 		}
 	}
 	
@@ -166,27 +169,23 @@ function setHidden(buttonID, hidden) {
 	}
 }
 
-function hideTimeout(element) {
-	$(element).prev().addClass("hiddenButton");
-	$(element).html("<img src='downarrow.png' /> <span class='internal'>show</span>");
-	setHidden($(element).prev().attr('id'), true);
+function hideButton(buttonID) {
+	button = $("#" + buttonID);
+	toggle = button.next();
 	
-	$(element).unbind("click");
-	$(element).click(function() {
-		$(element).prev().removeClass("hiddenButton");
-		$(element).html("<img src='uparrow.png' /> <span class='internal'>hide</span>");
+	button.addClass("hiddenButton");
+	toggle.html("<img src='downarrow.png' /> <span class='internal'>show</span>");
+	setHidden(button.attr('id'), true);
+	
+	toggle.unbind("click");
+	toggle.click(function() {
+		button.removeClass("hiddenButton");
+		toggle.html("<img src='uparrow.png' /> <span class='internal'>hide</span>");
 		
-		$(element).prev().mouseover(function() {
-			$(this).addClass("mouseover");
-		});
-		$(element).prev().mouseout(function() {
-			$(this).removeClass("mouseover");
-		});
-		
-		setHidden($(element).prev().attr('id'), false);
-		$(element).unbind("click");
-		$(element).click(function() {
-			var t = setTimeout(hideTimeout, 500, $(this));
+		setHidden(button.attr('id'), false);
+		toggle.unbind("click");
+		toggle.click(function() {
+			hideButton($(this).prev().attr('id'));
 		});
 	});
 }
