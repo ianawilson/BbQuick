@@ -52,8 +52,8 @@ function buildLogin() {
 	});
 	refreshPara = $("<p class='centered'>Already logged in? </p>").append(refresh);
 	
-	loginDiv.append(login);
-	loginDiv.append(refreshPara);
+	$("#login").append(login);
+	$("#login").append(refreshPara);
 	
 	runHandlers();
 }
