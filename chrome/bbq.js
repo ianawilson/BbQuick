@@ -284,9 +284,7 @@ function showCourse(courseID) {
 		if (sections[i]['subsections'] == null || sections[i]['subsections'].length == 0) {
 			button.click(function() {
 				url = sections[$(this).attr('id')]['url'];
-				if (url[0] == '/') {
-					url = bbURL + url;
-				}
+				url = bg.makeURL(url);
 				chrome.tabs.create({'url': url});
 			});
 		} else {
@@ -348,9 +346,7 @@ function showSection(courseID, sectionID) {
 		button.attr('id', i);
 		button.click(function() {
 			url = subsections[$(this).attr('id')]['url'];
-			if (url[0] == "/") {
-				url = bbURL + url;
-			}
+			url = bg.makeURL(url);
 			chrome.tabs.create({'url': url});
 			window.close();
 		});

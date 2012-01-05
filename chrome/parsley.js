@@ -151,7 +151,7 @@ function isAuthenticated() {
 
 function getCourses() {
 	if (authenticated) { 
-		$.get(bbURL + contentURL, function(data) {
+		$.get(makeURL(contentURL), function(data) {
 			
 			var html = $(data);
 			var header = html.find(".moduleTitle:contains(Courses Online)");
@@ -206,7 +206,7 @@ function getCourses() {
 }
 
 function getCourseSections(course) {
-	$.get(bbURL + course['url'], function(data) {
+	$.get(makeURL(course['url']), function(data) {
 		var html = $(data);
 		sections = new Array(0);
 		
@@ -242,30 +242,21 @@ function getCourseSections(course) {
 }
 
 function getCourseSubsections(section) {
-	$.get(bbURL + section['url'], function(data) {
+	$.get(makeURL(section['url']), function(data) {
 		html = $(data);
 		
 		subsections = new Array(0);
 		
-		// most pages use an id pageList, only announcements use announcementList
-		pageList = html.find("#pageList");
+		// most pages use an id content_listContainer, only announcements use announcementList
+		// NOTE: content_listContainer is new in Bb 9.1 -- used to be pageList
+		pageList = html.find("#content_listContainer");
 		announcementList = html.find("#announcementList");
 		
-		if (pageList.length > 0) {
-			lis = $(pageList).find('li.clearfix.read');
-			for (var i = 0; i < lis.length; i++) {
-				anchor = $(lis[i]).find('a');
-				heading = $(lis[i]).find('h3');
-				if (anchor.length > 0) {
-					subsection = {};
-					subsection['id'] = heading.attr('id');
-					subsection['name'] = $.trim($(heading[0]).text());
-					subsection['url'] = $(anchor[0]).attr('href');
-					
-					subsections.push(subsection);
-				}
-			}
-		} else if (announcementList.length > 0) {
+		// console.log(html);
+		// console.log(pageList);
+		// console.log(announcementList);
+		
+		if (announcementList.length > 0) {
 			lis = $(announcementList).find('li.clearfix');
 			
 			for (var i = 0; i < lis.length; i++ ) {
@@ -287,6 +278,22 @@ function getCourseSubsections(section) {
 				subsection['date'] = $.trim(spans[1].nextSibling.data);
 				
 				subsections.push(subsection);
+			} 
+		} else if (pageList.length > 0) {
+			lis = $(pageList).find('li.clearfix.read');
+			for (var i = 0; i < lis.length; i++) {
+				li = $(lis[i]);
+				anchor = li.find('a');
+				heading = li.find('h3');
+				if (anchor.length > 0) {
+					subsection = {};
+					subsection['id'] = li.attr('id').match(/:(.*)/)[1];
+					console.log(li.attr('id'));
+					subsection['name'] = $.trim($(heading[0]).text());
+					subsection['url'] = $(anchor[0]).attr('href');
+
+					subsections.push(subsection);
+				}
 			}
 		} else {
 			// nothing to see here
@@ -344,4 +351,12 @@ function announceSorted(item) {
 		ms = Date.parse(item['date']);
 	}
 	return ms;
+}
+
+function makeURL(url) {
+	if (url[0] == '/') {
+		return bbURL + url;
+	} else {
+		return url;
+	}
 }
