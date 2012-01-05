@@ -39,9 +39,10 @@ Wishlist
 --------
 
 - If you hit it at just the right time (looks like during an updateCourses?) it says "Please wait", which is annoying and the whole point of updateCourses ...
-- doesn't work for TAs (and probably teachers)
-- suppress or eliminate all of the GET errors from bringing all of the Bb code into jQuery. blech
+- Doesn't work for TAs (and probably teachers)
+- Suppress or eliminate all of the GET errors from bringing all of the Bb code into jQuery. blech
 - Bring in Assignment Due Dates
+- Put a login form in the popup. The Blackboard form relies on too much external (and therefore "unsafe") JavaScript, so we can't use that as-is. We could probably write our own form that posts the right info to the right place, though.
 - Make it generic: set your own Blackboard URL (bbURL), modify / extend the scraping to deal with different styles of Blackboard layout (if they are are different)
     - Jeff suggested that to make it generic, maybe we could have user-selectable scraping filters (drag and select over whatever you want)
 
