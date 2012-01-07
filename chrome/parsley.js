@@ -3,7 +3,9 @@ var bbURL = 'http://my.rochester.edu';
 
 // temporary storage for what we've already got
 var contentURL = null;
+var headerURL = null;
 var coursesURL = null;
+var name = null;
 var authenticated = false;
 var courses = new Array(0);
 var newCourses = new Array(0);
@@ -102,22 +104,45 @@ function getContentURL(callback) {
 		for (i in html) {
 			if (html[i].tagName != null && html[i].tagName.toLowerCase() == 'noframes') {
 				noframes = $(html[i].innerText);
-				getNext = false;
+				getNextContent = false;
+				getNextHeader = false;
 				for (j in noframes) {
 					tag = noframes[j].tagName;
 					if (tag != null) {
-						if (getNext && tag.toLowerCase() == 'p') {
+						// get the content URL
+						if (getNextContent && tag.toLowerCase() == 'p') {
 							href = $(noframes[j]).find('a').attr('href');
 							contentURL = href;
-							getNext = false;
+							getNextContent = false;
 						}
 						if (tag.toLowerCase() == 'h2' && noframes[j].innerText == 'Content') {
-							getNext = true;
+							getNextContent = true;
+						}
+						
+						// exact same code, but for the header
+						if (getNextHeader && tag.toLowerCase() == 'p') {
+							href = $(noframes[j]).find('a').attr('href');
+							headerURL = href;
+							getNextHeader = false;
+						}
+						if (tag.toLowerCase() == 'h2' && noframes[j].innerText == 'Blackboard Learn: Header') {
+							getNextHeader = true;
 						}
 					}
 				}
 			}
 		}
+		
+		$.get(makeURL(headerURL), function(data) {
+			html = $(data);
+			
+			var nameSpan = html.find('#loggedInUserName');
+			
+			if (nameSpan.length > 0) {
+				name = $(nameSpan[0]).text();
+			}
+		});
+		
 		if (callback) {
 			if (typeof(callback) === "function") {
 				console.log("Callback exists. Calling it.");
