@@ -16,6 +16,7 @@ Immediate To Do
 - Potentially change announcement sort to sort by ID (will properly place announcements without dates)
 - Store information locally to persist across sessions
     - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
+    - Could use the variable, name, as the UID in localStorage
 - find a way to show updating / scraping progress, or at least to know when it's done, rather than guessing with timeouts
     - In general, clean up the parsley init function and how everything is triggered.
     - Make it more on-demand, or at least faster
