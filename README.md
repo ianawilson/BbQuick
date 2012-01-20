@@ -1,18 +1,18 @@
 BbQuick
 =======
 
-A Chrome Extension and hand-crafted API for the Blackboard Learn installation
-at the University of Rochester. It's aim is to be fast and simple, distilling
+*You'll be licking your fingers by the time you're done.*
+
+A Chrome Extension for the Blackboard Learn installation
+at the University of Rochester. Its aim is to be fast and simple, distilling
 all of the information in your Blackboard account into a clean and simple
 interface.
-
-*You'll be licking your fingers by the time you're done.*
 
 
 Immediate To Do
 ---------------
 
-- Document the work so far
+- Document the work completed so far
 - Potentially change announcement sort to sort by ID (will properly place announcements without dates)
 - Store information locally to persist across sessions
     - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
@@ -82,6 +82,6 @@ Notes and Credits
 
 We're using Gouch's JS implementation of to-title-case (https://github.com/gouch/to-title-case).
 
-This project started develeopment for Jeff Bigham's *Human Computer Interaction*
+This project started development for Jeff Bigham's *Human Computer Interaction*
 class (CSC212) at the University of Rochester in the Fall of 2011.
 
