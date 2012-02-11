@@ -3,15 +3,14 @@
   "version": "1.0",
   "description": "You'll be licking your fingers by the time you're done.",
   "browser_action": {
-    "default_icon": "bb.png",
-      "popup": "bbq.html"
+    "default_icon": "./img/bb.png",
+    "popup": "popup.html"
   },
   "permissions": [
     "tabs",
-    "*://my.rochester.edu/*",
-    "https://ajax.googleapis.com/*"
+    "*://my.rochester.edu/*"
   ],
-  "background_page": "background.html",
+  "background_page": "parsley.html",
 
   "content_security_policy": "default-src 'self' http://my.rochester.edu; style-src 'self' 'unsafe-inline'"
 

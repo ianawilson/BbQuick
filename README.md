@@ -25,7 +25,6 @@ Immediate To Do
 Long Term To Do
 ---------------
 
-- Reorganize all of the files; they're a mess!
 - Manifest should be reviewed; used to have wide open security policies for Django app and other things we tried
 - User should be able to make custom sections
 - User should be able to permanently remove self-added content
