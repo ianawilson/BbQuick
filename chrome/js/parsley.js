@@ -343,7 +343,7 @@ function getRecentAnnouncements(limit) {
 	announcements = []
 	for (course in courses) {
 		// announcements are always the first section, and they are guaranteed to exist by parsley
-		theseAnnce = newCourses[course]['sections'][0]['subsections']
+		theseAnnce = courses[course]['sections'][0]['subsections']
 		announcements = announcements.concat(theseAnnce)
 	}
 	// ======= REMOVE BAD ELEMENTS FROM HERE ========
