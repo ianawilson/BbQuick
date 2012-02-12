@@ -9,9 +9,7 @@ var breadcrumbHtml = '<div id="breadcrumbs"><a>home</a> &raquo; </div>';
 var editShowHideHtml = '<a class="editShowHide internal" href="#">edit - show / hide</>';
 
 var courses;
-var bbURL;
-var loginForm;
-var authenticated;
+var isAuthenticated;
 var bg;
 
 // active variables for show / hide
@@ -24,13 +22,11 @@ function init() {
 	
 	// get the courses, blackboard url, and login form
 	courses = bg.courses;
-	bbURL = bg.bbURL;
-	loginForm = bg.loginForm;
-	authenticated = bg.authenticated;
+	isAuthenticated = bg.isAuthenticated;
 	
-	if (authenticated && courses.length > 0) {
+	if (isAuthenticated && courses.length > 0) {
 		showMain();
-	} else if (authenticated) {
+	} else if (isAuthenticated) {
 		buildWait();
 		showWait();
 	} else {
@@ -45,7 +41,7 @@ function buildWait() {
 }
 
 function buildLogin() {
-	login = $("<p></p><h2>BbQuick Needs You to Login</h2><p class='centered'>Please login on <a href='" + bbURL + "'>Blackboard</a>.</p>");
+	login = $("<p></p><h2>BbQuick Needs You to Login</h2><p class='centered'>Please login on <a href='" + bg.makeURL("/") + "'>Blackboard</a>.</p>");
 	refresh = $("<a href='#' class='internal'>Refresh BbQuick manually.</a>").click(function() {
 		bg.init();
 		window.close();
@@ -239,7 +235,7 @@ function showMain() {
 	$("#main").append(coursesDiv);
 	
 	//get announcements
-	var announcements = chrome.extension.getBackgroundPage().getRecentAnnouncements();
+	var announcements = bg.getRecentAnnouncements();
 	$("#course").append("<h2>Announcements</h2>");
 	makeAnnouncements("#main", announcements);
 	

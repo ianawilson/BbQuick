@@ -25,6 +25,7 @@ Immediate To Do
 Long Term To Do
 ---------------
 
+- Dates in announcements may have moved in Bb 9.1. Seems true for one ESM student. Needs confirming.
 - Manifest should be reviewed; used to have wide open security policies for Django app and other things we tried
 - User should be able to make custom sections
 - User should be able to permanently remove self-added content
@@ -32,7 +33,8 @@ Long Term To Do
 - Need a way to deal with a *different* person being logged in. Can we tell they are different? Is there a UID?
 - Delete old course entries that do no exist any more (not sure what this means...)
 - Deal with courses that don't use announcements or that put something else as the home page for the course
-
+- During updateCourses(), all subsections end up having all fields (including date and author, which are just for announcements)
+- BbQuick should have some kind of call to action within the popup. Maybe "<a>BbQuick is open source -- get involved!</a>"
 
 
 Wishlist
@@ -45,35 +47,6 @@ Wishlist
 - Put a login form in the popup. The Blackboard form relies on too much external (and therefore "unsafe") JavaScript, so we can't use that as-is. We could probably write our own form that posts the right info to the right place, though.
 - Make it generic: set your own Blackboard URL (bbURL), modify / extend the scraping to deal with different styles of Blackboard layout (if they are are different)
     - Jeff suggested that to make it generic, maybe we could have user-selectable scraping filters (drag and select over whatever you want)
-
-
-Scraping Process
-================
-
-- Do a GET for "my.rochester.edu"
-- Process: find the "content" frame, find the URL for that
-- GET content frame URL
-- Process: find each course, collect URLs
-- loop on course URLs, GET for each
-    - Process: find resource / button for each course, collect URLs
-    - loop on resources, GET for each
-        - Process: find sub-resources / buttons for each resource, collect content or URLs
-
-
-Structure for Course Information Data Structure
-===============================================
-
-- dictionary localStorage or JSON
-    - key 'courses': array of courses, each being a dict
-        - key 'name', eg 'Human Computer Interaction'
-        - key 'url'
-        - key 'shortname', eg 'csc212'
-        - key 'sections': array of sections, each being a dict
-            - key 'name', eg 'Syllabus'
-            - key 'url'
-            - key 'subsections', may be null if none exist: array of sections, each being a dict
-                - key 'name', eg 'Assignment #1'
-                - key 'url'
 
 
 Notes and Credits

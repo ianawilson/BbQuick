@@ -6,10 +6,9 @@ var contentURL = null;
 var headerURL = null;
 var coursesURL = null;
 var name = null;
-var authenticated = false;
+var isAuthenticated = false;
 var courses = new Array(0);
 var newCourses = new Array(0);
-var loginForm = null;
 
 // timeouts
 var initTimeout, updateCoursesTimeout;
@@ -26,13 +25,14 @@ function init() {
 	clearTimeout(initTimeout);
 	clearTimeout(updateCoursesTimeout);
 	
-	isAuthenticated();
+	checkAuthenticated();
 	// wait 10 seconds to get courses, since we might need to re-evaluate login status
 	getCoursesTimeout = setTimeout(getCourses, 10*1000);
-	// refresh in 5 minutes
-	initTimeout = setTimeout(init, 5*60*1000);
 	// update courses 20 seconds from now, after they're probably gotten
 	updateCoursesTimeout = setTimeout(updateCourses, 20*1000);
+	
+	// refresh in 5 minutes
+	initTimeout = setTimeout(init, 5*60*1000);
 }
 
 function updateCourses() {
@@ -154,15 +154,15 @@ function getContentURL(callback) {
 	});
 }
 
-function isAuthenticated() {
+function checkAuthenticated() {
 	getContentURL(function() {
 		$.get(bbURL + contentURL, function(data) {
 			html = $(data);
 			login = html.find("#loginBoxFull");
 			if (login.length > 0) {
-				authenticated = false;
+				isAuthenticated = false;
 			} else {
-				authenticated = true;
+				isAuthenticated = true;
 			}
 		});
 	});
@@ -175,7 +175,7 @@ function isAuthenticated() {
  **/
 
 function getCourses() {
-	if (authenticated) { 
+	if (isAuthenticated) { 
 		$.get(makeURL(contentURL), function(data) {
 			
 			var html = $(data);
@@ -226,7 +226,7 @@ function getCourses() {
 			}
 		});
 	} else {
-		console.log('User not authenticated.');
+		console.log('User not isAuthenticated.');
 	}
 }
 
