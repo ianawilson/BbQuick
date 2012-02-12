@@ -20,6 +20,7 @@ Immediate To Do
 - find a way to show updating / scraping progress, or at least to know when it's done, rather than guessing with timeouts
     - In general, clean up the parsley init function and how everything is triggered.
     - Make it more on-demand, or at least faster
+- Update docs and manifest version numbers! :)
 
 
 Long Term To Do
