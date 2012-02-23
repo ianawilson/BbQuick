@@ -85,9 +85,9 @@ function updateCourses() {
 	}
 	console.log("Done updating courses.");
 }
-function findSubMember(arr, member, value) {
+function findSubMember(arr, key, value) {
 	for (i in arr) {
-		if (arr[i][member] == value) {
+		if (arr[i][key] == value) {
 			return i;
 		}
 	}
@@ -309,11 +309,11 @@ function getCourseSubsections(section) {
 			for (var i = 0; i < lis.length; i++) {
 				li = $(lis[i]);
 				anchor = li.find('a');
-				heading = li.find('h3');
 				if (anchor.length > 0) {
 					subsection = {};
 					subsection['id'] = li.attr('id').match(/:(.*)/)[1];
-					console.log(li.attr('id'));
+                    // console.log(li.attr('id'));
+					heading = li.find('h3');
 					subsection['name'] = $.trim($(heading[0]).text());
 					subsection['url'] = $(anchor[0]).attr('href');
 

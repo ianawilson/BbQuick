@@ -13,6 +13,7 @@ Immediate To Do
 ---------------
 
 - Document the work completed so far
+    - popup
 - Potentially change announcement sort to sort by ID (will properly place announcements without dates)
 - Store information locally to persist across sessions
     - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
@@ -21,6 +22,7 @@ Immediate To Do
     - In general, clean up the parsley init function and how everything is triggered.
     - Make it more on-demand, or at least faster
 - Update docs and manifest version numbers! :)
+- Probably change updateCourses to use IDs since we have those now
 
 
 Long Term To Do

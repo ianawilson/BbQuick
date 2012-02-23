@@ -172,6 +172,7 @@ Outward Facing Objects and Functions
     :type url: ``String``
     :returns: ``String``, a complete absolute URL
 
+
 Internal Objects and Functions
 ------------------------------
 
@@ -210,7 +211,7 @@ Internal Objects and Functions
     
 .. js:function:: getCourses()
 
-    If authenticated, gets all of the user's courses and course resources
+    If authenticated, gets all of the user's courses and course resources, places them in :js:data:`newCourses`
     
     :returns: nothing
     
@@ -222,15 +223,119 @@ Internal Objects and Functions
         * If it contains an anchor tag, that has everything
         * ``href`` is the URL
         * The text content can be split into the shortname, semester, and full name
-    #. Loop through the collected courses and call :js:func:`getCourseSections` for each
+    #. Loop through the collected courses and call :js:func:`getCourseSections` for each, which calls :js:func:`getCourseSubsections`
 
 .. js:function:: getCourseSections(course)
     
+    Gets course sections for the given course, adds them to the given :data:`course`
     
+    :param course: the course to get sections for; the ``sections`` key will be added and filled with an ``Array`` of sections
+    :type course: ``Associative Array``
+    :returns: nothing
+    
+    #. ``GET`` :data:`course['url']` to get course page
+    #. Define new ``Array`` :data:`sections` to populate with section data
+    #. Announcements are assumed to be on the course page, so the course URL is used as the URL
+    #. Grab the element (the ``ul``) with the id ``courseMenuPalette_contents``, which is the button list for the course
+    #. Search this ``ul`` for ``li``\s without the class ``divider``
+    #. Loop through the remaining ``li``\s for each course section, for each:
+        * Make an ``Associative Array`` for the section
+        * Grab the anchor, trim its text, and use that for the section name
+        * Use the anchor's ``href`` as the section URL
+        * As long as the section name is **not** "Announcements" or "Course Tools", add this section to the :data:`sections` list
+    #. Set :data:`course['sections']` to :data:`sections`
+    #. Loop through all of these sections and call :js:func:`getCourseSubsections` for each
 
-.. js:function:: getCourseSubsections(sections)
+.. js:function:: getCourseSubsections(section)
+    
+    Gets the subsections for the given :data:`section`
+    
+    :param section: Section to get subsections / entries for
+    :type section: ``Associative Array``
+    
+    #. ``GET`` the section URL, :data:`section['url']`
+    #. Define new ``Array`` :data:`subsections` to populate with subsection data
+    #. Search the result for both announcement and generic lists (denoted by the ids ``announcementList`` and ``content_listContainer``, respectively)
+    #. Whichever one exists, we're going to use that
+    #. If we're looking at Announcements:
+        #. Search the list for ``li`` elements with the class ``clearfix``
+        #. Loop through these, for each:
+            * Use the ``li``'s ``id`` attribute for :data:`subsection['id']`
+            * Use a trimmed heading (``h3`` within the ``li``) for :data:`subsection['name']`
+            * Use the html of a trimmed ``div`` with the class ``details`` for :data:`subsection['details']`
+            * Use the ``spans`` within the ``div`` with class ``announcementInfo`` for :data:`subsection['author']` and :data:`subsection['date']`
+            * Push :data:`subsection` onto :data:`subsections`
+    #. Else if we're looking at a generic page:
+        #. Search the list for ``li`` elements with the classes ``clearfix`` and ``read``
+        #. Loop through these, for each:
+            * If it contains an anchor, then we use it (otherwise, skip it)
+            * Define a new ``Associative Array`` :data:`subsection`
+            * Use whatever is after the colon in the ``li``'s ``id`` for :data:`subsection['id']`
+            * Use the trimmed heading (``h3`` within the ``li``) for :data:`subsection['name']`
+            * Use the anchor's ``href`` for :data:`subsection['url']`
+            * Push :data:`subsection` onto :data:`subsections`
+    #. Else, there's nothing there
+    #. Set :data:`section['subsections']` to :data:`subsections`
+
 .. js:function:: updateCourses()
-.. js:function:: findSubMember(arr, member, value)
+    
+    Goes through :js:data:`newCourses` and non-destructively updates :js:data:`courses` with them
+    
+    :returns: nothing
+    
+    The idea here is that if a course, section, or subsection already exists, we go through it
+    neatly inserting and updating data from :js:data:`newCourses`. If it doesn't exist, the
+    :js:data:`newCourses` data is simply placed where it is missing in :js:data:`courses`.
+    
+    One of the reasons we don't want to overwrite these is that we store the user's display
+    preferences within the :js:data:`courses` object.
+    
+    #. Loop through :js:data:`newCourses`, for each:
+        #. Use :js:func:`findSubMember` with the course's shortname to determine if the current course is in :js:data:`courses`
+        #. If it doesn't exist, simply splice the course into :js:data:`courses` at the appropriate place
+        #. If it exists, update the name and loop through the sections, for each:
+            #. Use :js:func:`findSubMember` with the section's name to determine if the current section is in the course's ``sections`` array
+            #. If it doesn't exist, simply splice the section into the array at the appropriate place
+            #. If it exists, update the URL and loop through the subsections, for each:
+                #. Use :js:func:`findSubMember` with the id to determine if the current subsection is in the section's ``subsections`` array
+                #. If the section doesn't exist, simply splice it in at the appropriate place
+                #. If it does, update the ``author``, ``date``, and ``name`` fields
+
+.. js:function:: findSubMember(arr, key, value)
+    
+    Search the given array, :data:`arr` (assumed to be full of associative arrays) and check the elements' ``key`` for the value, :data:`value`
+    
+    :param arr: array to search
+    :type arr: Array of Associative Arrays
+    :param key: key to check within :data:`arr` when searching
+    :type key: ``String``
+    :param value: the value to look for within each element in :data:`arr` at the key, ``key``
+    :returns: the index if the value exists within the array; ``-1`` if it does not exist
+    
+    This loops through each element in the array and checks the array at :data:`arr[i][key]`
+    for :data:`value`, returning ``i`` if it exists, and ``-1`` if it doesn't find it at all.
+
 .. js:function:: getContentURL(callback)
+    
+    Gets the URL of the content frame to set :js:data:`contentURL`, gets the URL of the header frame to set
+    :js:data:`headerURL`, and calls the callback function, :data:`callback`.
+    
+    Because it's too cumbersome to deal with the frames, we actually crawl through ``<noframes>`` looking
+    for the right ``<h2>`` tags.
+
 .. js:function:: checkAuthenticated()
+    
+    Asynchronous method to check if the user is authenticated.
+    
+    This calls :js:func:`getContentURL` and then checks the content frame for an element with the id
+    ``#loginBoxFull``. Sets :js:data:`isAuthenticated`.
+
 .. js:function:: announceSorted(item)
+    
+    Converts the ``date`` property of this item to milliseconds since the epoch so that it can be used for sorting.
+    
+    If ``item['date']`` doesn't exist, it returns 0. If it does, then it converts it using the builtin ``Date.parse()``.
+    
+    :param item: has a key, ``date`` which is a string containing date and time
+    :type item: Assoc Array
+    :returns: milliseconds since the epoch for this date string

@@ -20,8 +20,8 @@ manifest.json
 
 BbQuick uses:
 
-* a popup, :ref:`popup`
 * a background page, :ref:`parsley`
+* a popup, :ref:`popup`
 
 It requires these permissions:
 
