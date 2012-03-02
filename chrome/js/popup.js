@@ -2,19 +2,22 @@ $(document).ready(function() {
 	init();
 });
 
+// background page, and bg variables
+var bg;
+var courses;
+var isAuthenticated;
+
+// some biolerplate html snippets
 var buttonHtml = "<div class='button'></div>";
 var announceHtml = "<div class='announcement'></div>";
 var addPageHtml = '<div class="small button" title="Add the active tab as a resource for this course.">+ add active tab</div>';
 var breadcrumbHtml = '<div id="breadcrumbs"><a>home</a> &raquo; </div>';
 var editShowHideHtml = '<a class="editShowHide internal" href="#">edit - show / hide</>';
 
-var courses;
-var isAuthenticated;
-var bg;
-
 // active variables for show / hide
 var activeCourse = -1;
 var activeSection = -1;
+
 
 function init() {
 	// get the background page
@@ -27,32 +30,12 @@ function init() {
 	if (isAuthenticated && courses.length > 0) {
 		showMain();
 	} else if (isAuthenticated) {
-		buildWait();
 		showWait();
 	} else {
-		buildLogin();
 		showLogin();
 	}
 }
 
-function buildWait() {
-	wait = $("<p></p><h2>BbQuick is Still Working</h2><p class='centered'>Please reload the popup in a moment.</p>");
-	$("#wait").append(wait);
-}
-
-function buildLogin() {
-	login = $("<p></p><h2>BbQuick Needs You to Login</h2><p class='centered'>Please login on <a href='" + bg.makeURL("/") + "'>Blackboard</a>.</p>");
-	refresh = $("<a href='#' class='internal'>Refresh BbQuick manually.</a>").click(function() {
-		bg.init();
-		window.close();
-	});
-	refreshPara = $("<p class='centered'>Already logged in? </p>").append(refresh);
-	
-	$("#login").append(login);
-	$("#login").append(refreshPara);
-	
-	runHandlers();
-}
 
 function runHandlers() {
 	
@@ -100,104 +83,42 @@ function runHandlers() {
 	/**
 	 * Convert anchors to tab creators
 	 **/
+	
 	$(wrapperSelector).find('a').not('.internal').not('#breadcrumbs a').click(function() {
 		chrome.tabs.create({'url': $(this).attr('href')});
 		window.close();
 	});
 }
 
-function enterEdit() {
-	$(".editShowHide").html("collapse - show / hide");
-	$(".editShowHide").unbind("click", enterEdit);
-	$(".editShowHide").click(exitEdit);
-	
-	buttons = $(".button").not("small");
-	buttons.slideDown();
-	buttons.next().slideDown();
-}
-
-function exitEdit() {
-	$(".editShowHide").html("edit - show / hide");
-	$(".editShowHide").unbind("click", exitEdit);
-	$(".editShowHide").click(enterEdit);
-	
-	var buttons = $(".button").not(".small");
-	for (i = 0; i<buttons.length; i++) {
-		button = $(buttons[i]);
-		buttonID = button.attr('id')
-		
-		// console.log(activeCourse + ', ' + activeSection + ', ' + buttonID);
-		// console.log(hidden);
-		if (getHidden(buttonID)) {
-			button.slideUp();
-			button.next().slideUp();
-			// hideButton(button.next());
-			hideButton(button.attr('id'));
-		}
-	}
-	
-	$(".button").not(".small").next().slideUp();
-}
-
-function getHidden(buttonID) {
-	if (activeCourse >= 0) {
-		if (activeSection >= 0) {
-			hidden = courses[activeCourse]['sections'][activeSection]['subsections'][buttonID]['hidden'];
-		} else {
-			hidden = courses[activeCourse]['sections'][buttonID]['hidden'];
-		}
-	} else {
-		hidden = courses[buttonID]['hidden'];
-	}
-	
-	return hidden;
-}
-function setHidden(buttonID, hidden) {
-	if (activeCourse >= 0) {
-		if (activeSection >= 0) {
-			courses[activeCourse]['sections'][activeSection]['subsections'][buttonID]['hidden'] = hidden;
-		} else {
-			courses[activeCourse]['sections'][buttonID]['hidden'] = hidden;
-		}
-	} else {
-		courses[buttonID]['hidden'] = hidden;
-	}
-}
-
-function hideButton(buttonID) {
-	var button = $("#" + buttonID);
-	console.log(button);
-	var toggle = button.next();
-	
-	button.addClass("hiddenButton");
-	toggle.html("<img src='./img/downarrow.png' /> <span class='internal'>show</span>");
-	setHidden(button.attr('id'), true);
-	
-	toggle.unbind("click");
-	toggle.click(function() {
-		var toggle = $(this);
-		var button = toggle.prev();
-		
-		button.removeClass("hiddenButton");
-		toggle.html("<img src='./img/uparrow.png' /> <span class='internal'>hide</span>");
-		
-		setHidden(button.attr('id'), false);
-		toggle.unbind("click");
-		toggle.click(function() {
-			hideButton($(this).prev().attr('id'));
-		});
-	});
-}
+/**
+ * Sections or Pages
+ **/
 
 function showWait() {
 	$(".wrapper").hide();
+	
+	wait = $("<p></p><h2>BbQuick is Still Working</h2><p class='centered'>Please reload the popup in a moment.</p>");
+	$("#wait").append(wait);
+	
 	$("#wait").show();
 	
 	runHandlers();
 }
 
 function showLogin() {
-	$(".wrapper").hide();
+    $(".wrapper").hide();
+    
+    login = $("<p></p><h2>BbQuick Needs You to Login</h2><p class='centered'>Please login on <a href='" + bg.makeURL("/") + "'>Blackboard</a>.</p>");
+	refresh = $("<a href='#' class='internal'>Refresh BbQuick manually.</a>").click(function() {
+		bg.init();
+		window.close();
+	});
+	refreshPara = $("<p class='centered'>Already logged in? </p>").append(refresh);
+	
+	$("#login").append(login);
+	$("#login").append(refreshPara);
+	
+	
 	$("#login").show();
 	
 	runHandlers();
@@ -354,22 +275,6 @@ function showSection(courseID, sectionID) {
 	runHandlers();
 }
 
-function clearAll() {
-	// clear everything so that we don't have any conflicting button ids
-	$("#main").empty();
-	$("#course").empty();
-	$("#section").empty();
-}
-
-function makeAnnouncements(divSelector, announcements) {
-	for (i = 0; i<announcements.length; i++) {
-		if (announcements[i]['author']) {
-			announcement = $(announceHtml).html("<p class='announcementInfo'>On " + announcements[i]['date'] + " " + announcements[i]['author'] + " posted:</p><p>" + announcements[i]['details'] + "</p>");
-			$(divSelector).append("<hr class='short-hr' />").append(announcement);
-		}
-	}
-}
-
 function showAddPage(courseID, sectionID) {
 	$("#add").empty();
 	
@@ -438,6 +343,112 @@ function showAddPage(courseID, sectionID) {
 	
 	$(".wrapper").hide();
 	$("#add").show();
+}
+
+/**
+ * Show / hide item
+ **/
+
+function enterEdit() {
+	$(".editShowHide").html("collapse - show / hide");
+	$(".editShowHide").unbind("click", enterEdit);
+	$(".editShowHide").click(exitEdit);
+	
+	buttons = $(".button").not("small");
+	buttons.slideDown();
+	buttons.next().slideDown();
+}
+
+function exitEdit() {
+	$(".editShowHide").html("edit - show / hide");
+	$(".editShowHide").unbind("click", exitEdit);
+	$(".editShowHide").click(enterEdit);
+	
+	var buttons = $(".button").not(".small");
+	for (i = 0; i<buttons.length; i++) {
+		button = $(buttons[i]);
+		buttonID = button.attr('id')
+		
+		if (getHidden(buttonID)) {
+			button.slideUp();
+			button.next().slideUp();
+			// hideButton(button.next());
+			hideButton(button.attr('id'));
+		}
+	}
+	
+	$(".button").not(".small").next().slideUp();
+}
+
+function getHidden(buttonID) {
+	if (activeCourse >= 0) {
+		if (activeSection >= 0) {
+			hidden = courses[activeCourse]['sections'][activeSection]['subsections'][buttonID]['hidden'];
+		} else {
+			hidden = courses[activeCourse]['sections'][buttonID]['hidden'];
+		}
+	} else {
+		hidden = courses[buttonID]['hidden'];
+	}
+	
+	return hidden;
+}
+
+function setHidden(buttonID, hidden) {
+	if (activeCourse >= 0) {
+		if (activeSection >= 0) {
+			courses[activeCourse]['sections'][activeSection]['subsections'][buttonID]['hidden'] = hidden;
+		} else {
+			courses[activeCourse]['sections'][buttonID]['hidden'] = hidden;
+		}
+	} else {
+		courses[buttonID]['hidden'] = hidden;
+	}
+}
+
+function hideButton(buttonID) {
+	var button = $("#" + buttonID);
+	console.log(button);
+	var toggle = button.next();
+	
+	button.addClass("hiddenButton");
+	toggle.html("<img src='./img/downarrow.png' /> <span class='internal'>show</span>");
+	setHidden(button.attr('id'), true);
+	
+	toggle.unbind("click");
+	toggle.click(function() {
+		var toggle = $(this);
+		var button = toggle.prev();
+		
+		button.removeClass("hiddenButton");
+		toggle.html("<img src='./img/uparrow.png' /> <span class='internal'>hide</span>");
+		
+		setHidden(button.attr('id'), false);
+		toggle.unbind("click");
+		toggle.click(function() {
+			hideButton($(this).prev().attr('id'));
+		});
+	});
+}
+
+/**
+ * Misc helpers
+ **/
+
+function clearAll() {
+	// clear everything so that we don't have any conflicting button ids
+	$("#main").empty();
+	$("#course").empty();
+	$("#section").empty();
+}
+
+function makeAnnouncements(divSelector, announcements) {
+	for (i = 0; i<announcements.length; i++) {
+		if (announcements[i]['author']) {
+			announcement = $(announceHtml).html("<p class='announcementInfo'>On " + announcements[i]['date'] + " " + announcements[i]['author'] + " posted:</p><p>" + announcements[i]['details'] + "</p>");
+			$(divSelector).append("<hr class='short-hr' />").append(announcement);
+		}
+	}
 }
 
 function rebuildSectionSelect(courseID, sectionID) {

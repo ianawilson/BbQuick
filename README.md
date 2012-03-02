@@ -14,15 +14,23 @@ Immediate To Do
 
 - Document the work completed so far
     - popup
+        - run handlers
+        - sections or pages
+        - show / hide items
+        - misc helpers
 - Potentially change announcement sort to sort by ID (will properly place announcements without dates)
+    - doc
 - Store information locally to persist across sessions
     - localStorage is an associative array, eg localStorage['foo'] = 'bar'; persists across sessions
     - Could use the variable, name, as the UID in localStorage
+    - doc
 - find a way to show updating / scraping progress, or at least to know when it's done, rather than guessing with timeouts
     - In general, clean up the parsley init function and how everything is triggered.
     - Make it more on-demand, or at least faster
+    - doc
 - Update docs and manifest version numbers! :)
 - Probably change updateCourses to use IDs since we have those now
+    - doc
 
 
 Long Term To Do
