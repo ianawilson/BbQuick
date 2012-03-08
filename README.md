@@ -14,7 +14,6 @@ Immediate To Do
 
 - Document the work completed so far
     - popup
-        - run handlers
         - sections or pages
         - show / hide items
         - misc helpers
@@ -36,6 +35,7 @@ Immediate To Do
 Long Term To Do
 ---------------
 
+- Clean up and prettify the interface
 - Dates in announcements may have moved in Bb 9.1. Seems true for one ESM student. Needs confirming.
 - Manifest should be reviewed; used to have wide open security policies for Django app and other things we tried
 - User should be able to make custom sections
