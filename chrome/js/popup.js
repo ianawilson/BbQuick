@@ -94,17 +94,6 @@ function runHandlers() {
  * Sections or Pages
  **/
 
-function showWait() {
-	$(".wrapper").hide();
-	
-	wait = $("<p></p><h2>BbQuick is Still Working</h2><p class='centered'>Please reload the popup in a moment.</p>");
-	$("#wait").append(wait);
-	
-	$("#wait").show();
-	
-	runHandlers();
-}
-
 function showLogin() {
     $(".wrapper").hide();
     
@@ -120,6 +109,17 @@ function showLogin() {
 	
 	
 	$("#login").show();
+	
+	runHandlers();
+}
+
+function showWait() {
+	$(".wrapper").hide();
+	
+	wait = $("<p></p><h2>BbQuick is Still Working</h2><p class='centered'>Please reload the popup in a moment.</p>");
+	$("#wait").append(wait);
+	
+	$("#wait").show();
 	
 	runHandlers();
 }
@@ -284,8 +284,6 @@ function showAddPage(courseID, sectionID) {
 	if (!sectionID) {
 		sectionID = -1;
 	}
-	// console.log(courseID);
-	// console.log(sectionID);
 	
 	$("#add").append("<h2>Add the active tab as a resource for</h2>");
 	courseSelect = $("<select class='centered' id='courseSelect'></select>");
@@ -454,13 +452,10 @@ function makeAnnouncements(divSelector, announcements) {
 function rebuildSectionSelect(courseID, sectionID) {
 	sectionSelect = $("#sectionSelect");
 	sectionSelect.empty();
-	// console.log(courseID)
 	
 	sectionSelect.append("<option value='-1'>-- Just put it directly inside " + courses[courseID]['shortname'] + " --</option>");
 	
 	for (i = 1; i < courses[courseID]['sections'].length; i++) {
-		// console.log(sectionSelect);
-		// console.log(courses[courseID]['sections'][i]['name']);
 		sectionSelect.append("<option value='" + i + "'>" + courses[courseID]['sections'][i]['name'] + "</option>");
 	}
 	

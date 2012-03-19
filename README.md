@@ -14,9 +14,7 @@ Immediate To Do
 
 - Document the work completed so far
     - popup
-        - sections or pages
         - show / hide items
-        - misc helpers
 - Potentially change announcement sort to sort by ID (will properly place announcements without dates)
     - doc
 - Store information locally to persist across sessions
@@ -30,12 +28,12 @@ Immediate To Do
 - Update docs and manifest version numbers! :)
 - Probably change updateCourses to use IDs since we have those now
     - doc
+- Clean up and prettify the interface
 
 
 Long Term To Do
 ---------------
 
-- Clean up and prettify the interface
 - Dates in announcements may have moved in Bb 9.1. Seems true for one ESM student. Needs confirming.
 - Manifest should be reviewed; used to have wide open security policies for Django app and other things we tried
 - User should be able to make custom sections
@@ -66,5 +64,5 @@ Notes and Credits
 We're using Gouch's JS implementation of to-title-case (https://github.com/gouch/to-title-case).
 
 This project started development for Jeff Bigham's *Human Computer Interaction*
-class (CSC212) at the University of Rochester in the Fall of 2011.
-
+class (CSC212) at the University of Rochester in the Fall of 2011 with the help
+of Trevor Filer and Chelsea Flint.

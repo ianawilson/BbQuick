@@ -73,31 +73,64 @@ Each of these functions first hides everything else (by calling :js:func:`clearA
 :js:func:`runHandlers`, and makes its div visible.
 
 
-.. js:function:: showLogin
+.. js:function:: showLogin()
     
-    
+    Builds a "please login" page linking to Blackboard, as well as a "refresh BbQuick if you're already logged in" button.
 
-.. js:function:: showWait
+.. js:function:: showWait()
     
-    
+    Builds a simple "please wait" page to be displayed while parsley is working.
 
-.. js:function:: showMain
+.. js:function:: showMain()
     
+    Builds the main page, which includes:
     
+    * an "+Add Page" button (links to :js:func:`showAddPage`)
+    * buttons for each course, each calling :js:func:`showCourse` for adding resources to BbQuick.
 
 .. js:function:: showCourse(courseID)
     
+    Builds a page for the given course, as identified by its ID. Sets :js:data:`activeCourse`
+    to the given :js:data:`courseID`.
     
+    :arg courseID: index of the course to display within :js:data:`courses`
+    :type courseID: int or string representing an int
+    
+    * an "+Add Page" button, :js:func:`showAddPage`
+    * a breadcrumb, with links
+    * list of sections in the course, each calling :js:func:`showSection`
+    * sorted list of announcements for this course
 
 .. js:function:: showSection(courseID, sectionID)
     
+    Builds a page for the given section, as identified by its ID and its course's ID. Sets
+    :js:data:`activeCourse` to the given :js:data:`courseID` and :js:data:`activeSection`
+    to the given :js:data:`sectionID`.
     
+    :arg courseID: index of the course to display within :js:data:`courses`
+    :type courseID: int or string representing an int
+    :arg sectionID: index of the section to display within :js:data:`courses[courseID]['sections']`
+    :type sectionID: int or string representing an int
+    
+    * an "+Add Page" button, :js:func:`showAddPage`
+    * a breadcrumb, with links
+    * list of subsections in the course, each opening those resources in a new tab
 
 .. js:function:: showAddPage([courseID, sectionID])
     
+    Builds a page for adding the current tab to BbQuick. It gives options for which
+    course and which section to add the page to. There is a course list, and every
+    time a different course is selected, a different section list is built, using
+    :js:func:`rebuildSectionSelect`. The course and section default to whatever
+    was active before coming to this page.
     
-
-
+    :arg courseID: index of the course that we are coming from (default for course list)
+    :type courseID: int or string representing an int
+    :arg sectionID: index of the section that we are coming from (default for course list)
+    :type sectionID: int or string representing an int
+    
+    * Builds course and section selectors
+    * Builds function to call for submit button, which adds the current tab to the given course and section
 
 
 Show / hide items
@@ -108,4 +141,41 @@ Show / hide items
 
 Misc helpers
 ------------
+
+.. js:function:: clearAll()
+    
+    Clears all of the divs that are dynamically generated so that we never get
+    conflicting IDs. Clear the divs with these ids:
+    
+    * ``main``
+    * ``course``
+    * ``section``
+
+.. js:function:: makeAnnouncements(divSelector, announcements)
+
+    Get the announcements and put them in the div that is selected by the given
+    :js:data:`divSelector`.
+    
+    :arg divSelector: a jQuery selector that will provide the element to append the announcements to
+    :type divSelector: String
+    :arg announcements: the announcements to display
+    :type announcements: list containing dicts
+    
+    The announcements will probably come from :js:func:`getRecentAnnouncements`,
+    and are assumed to have the following keys:
+    
+    * ``author``
+    * ``date``
+    * ``details``
+
+.. js:function:: rebuildSectionSelect(courseID, sectionID)
+    
+    Rebuild the section selection list, assumed to be the element with the id
+    ``sectionSelect``. Rebuild using the given :js:data:`courseID`, and default
+    the value to the given :js:data:`sectionID`.
+    
+    :arg courseID: index of the course from :js:data:`courses` to display sections for
+    :type courseID: int or string representing an int
+    :arg sectionID: index of the section from :js:data:`courses[courseID]['sections']` to make the default selection
+    :type sectionID: int or string representing an int
 
