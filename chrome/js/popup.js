@@ -406,7 +406,7 @@ function setHidden(buttonID, hidden) {
 
 function hideButton(buttonID) {
 	var button = $("#" + buttonID);
-	console.log(button);
+    // console.log(button);
 	var toggle = button.next();
 	
 	button.addClass("hiddenButton");

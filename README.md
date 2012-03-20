@@ -9,12 +9,16 @@ all of the information in your Blackboard account into a clean and simple
 interface.
 
 
+Documentation
+-------------
+
+To read the documentation locally, you must have Sphinx installed. In the docs
+folder simply run `make html` in the terminal.
+
+
 Immediate To Do
 ---------------
 
-- Document the work completed so far
-    - popup
-        - show / hide items
 - Potentially change announcement sort to sort by ID (will properly place announcements without dates)
     - doc
 - Store information locally to persist across sessions

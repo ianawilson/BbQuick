@@ -136,7 +136,41 @@ Each of these functions first hides everything else (by calling :js:func:`clearA
 Show / hide items
 -----------------
 
+These functions all facilitate showing and hiding of particular resources in BbQuick.
+Some of this has been refactored, but we should consider reorganizing or continuing
+to refactor all of this, as it's the least organized of everything.
 
+.. js:function:: enterEdit()
+    
+    Enters the edit mode for show and hide, sliding down the "show" or "hide" buttons.
+    All possible resources are also slid out so that they are visible.
+
+.. js:function:: exitEdit()
+    
+    Exits the edit mode for show and hide, sliding up (hiding) all of the "show" and
+    "hide" buttons. All resources marked as hidden are also slid up so that they are
+    no longer visible.
+
+.. js:function:: getHidden(buttonID)
+                 setHidden(buttonID, hidden)
+    
+    Gets or sets the value for whether a button is hidden or not with its ID,
+    which is assumed to be an integer or a string representation of an integer.
+    Uses :js:data:`activeCourse` and :js:data:`activeSection` to figure out
+    how to find the correct resource using the ID.
+    
+    .. note::
+        :js:func:`getHidden` returns a boolean, and the arg :js:data:`hidden` for
+        :js:func:`setHidden` should be a boolean.
+
+.. js:function:: hideButton(buttonID)
+    
+    This sets up everything for the button with the given ID to be hidden.
+    It sets the correct show or hide button (with an arrow facing the right
+    direction) and adds a click handler to unhide the button.
+    
+    .. note:: This is probably the least semantic of functions, and its
+        functionality should potentially be reorganized or renamed.
 
 
 Misc helpers
