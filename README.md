@@ -35,3 +35,6 @@ We're using Gouch's JS implementation of to-title-case (https://github.com/gouch
 This project started development for Jeff Bigham's *Human Computer Interaction*
 class (CSC212) at the University of Rochester in the Fall of 2011 with the help
 of Trevor Filer and Chelsea Flint.
+
+BbQuick and its creators are not affiliated with and are not endorsed by
+Blackboard in any way.
