@@ -38,6 +38,21 @@ Initialization and Global Variables
     
     Has the index of the active course or section. Used primarily by :js:func:`getHidden` and :js:func:`setHidden`.
 
+.. js:function:: popup.init()
+    
+    .. This is named popup.init to stop it from conflicting with the parsley version
+        of init. There are no modules in the JavaScript domain, so there's no way
+        to separate the namespaces.
+    
+    Gets the background page, :js:data:`bg`, and uses it to set local copies of 
+    :js:data:`courses` and :js:data:`isAuthenticated`.
+    
+    Then, depending on parsley's state, it will run one of
+    
+    * :js:func:`showLogin`
+    * :js:func:`showWait`
+    * :js:func:`showMain`
+
 
 Run Handlers
 ------------
