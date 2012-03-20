@@ -15,7 +15,7 @@ Documentation
 To read the documentation locally, you must have Sphinx installed. In the docs
 folder simply run `make html` in the terminal.
 
-For more info and what's going on with the project, see [notesideas]:(https://github.com/ianawilson/BbQuick/blob/master/notesideas.md).
+For more info and what's going on with the project, see [notesideas](https://github.com/ianawilson/BbQuick/blob/master/notesideas.md).
 
 
 Installation
