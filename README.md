@@ -9,15 +9,6 @@ all of the information in your Blackboard account into a clean and simple
 interface.
 
 
-Documentation
-=============
-
-To read the documentation locally, you must have Sphinx installed. In the docs
-folder simply run `make html` in the terminal.
-
-For more info and what's going on with the project, see `notesideas.md`.
-
-
 Installation
 ============
 
@@ -30,6 +21,15 @@ your extensions in Chrome (under Tools or at chrome://settings/extensions),
 and enter Developer mode by checking the box in the upper right corner.
 Click "Load unpacked extension...", navigate to the chrome folder within
 BbQuick, and Select that.
+
+
+Documentation
+=============
+
+To read the documentation locally, you must have Sphinx installed. In the docs
+folder simply run `make html` in the terminal.
+
+For more info and what's going on with the project, see `notesideas.md`.
 
 
 Notes and Credits
