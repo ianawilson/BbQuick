@@ -21,10 +21,15 @@ For more info and what's going on with the project, see `notesideas.md`.
 Installation
 ============
 
-To install BbQuick in Chrome, open your extensions (under Tools or at
-chrome://settings/extensions), and enter Developer mode by checking the box
-in the upper right corner. Click "Load unpacked extension...", navigate to
-the chrome folder within BbQuick, and Select that.
+The easiest way to install BbQuick right now is to download the packed
+Chrome extension (crx) available from the
+[downloads](https://github.com/ianawilson/BbQuick/downloads).
+
+To install BbQuick from source, download or clone the BbQuick source, open
+your extensions in Chrome (under Tools or at chrome://settings/extensions),
+and enter Developer mode by checking the box in the upper right corner.
+Click "Load unpacked extension...", navigate to the chrome folder within
+BbQuick, and Select that.
 
 
 Notes and Credits
